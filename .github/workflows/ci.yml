@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      - run: npm run build
+        env:
+          # Build-time default only — no route in this app fetches the API
+          # at build time (every page under (app)/ is dynamic), so this
+          # just needs to be a syntactically valid URL to satisfy env.ts.
+          DJANGO_API_URL: http://localhost:8000
