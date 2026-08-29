@@ -6,6 +6,7 @@ import {
   GraduationCap,
   HeartHandshake,
   LayoutDashboard,
+  NotebookPen,
   Shield,
 } from "lucide-react";
 
@@ -44,7 +45,10 @@ export const NAV_SECTIONS: NavSection[] = [
   },
   {
     heading: "Examinations",
-    items: [{ label: "Assessments", icon: ClipboardList, href: "/assessments", enabled: true }],
+    items: [
+      { label: "Assessments", icon: ClipboardList, href: "/assessments", enabled: true },
+      { label: "My Exams", icon: NotebookPen, href: "/my-exams", enabled: true },
+    ],
   },
   {
     heading: "Administration",
