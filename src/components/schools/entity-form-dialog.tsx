@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -27,6 +28,7 @@ export type SelectOption = { value: string; label: string };
 
 export type FieldConfig<T extends FieldValues> =
   | { name: Path<T>; label: string; type: "text" | "email" | "date" | "number" }
+  | { name: Path<T>; label: string; type: "textarea" }
   | { name: Path<T>; label: string; type: "checkbox" }
   | { name: Path<T>; label: string; type: "select"; options: SelectOption[]; placeholder?: string };
 
@@ -125,6 +127,14 @@ export function EntityFormDialog<T extends FieldValues>({
                           ))}
                         </SelectContent>
                       </Select>
+                      <FormMessage />
+                    </FormItem>
+                  ) : fieldConfig.type === "textarea" ? (
+                    <FormItem>
+                      <FormLabel>{fieldConfig.label}</FormLabel>
+                      <FormControl>
+                        <Textarea {...field} value={field.value ?? ""} />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   ) : (
