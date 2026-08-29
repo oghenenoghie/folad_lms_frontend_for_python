@@ -77,12 +77,18 @@ export async function getCampuses(schoolId: string): Promise<Campus[] | null> {
   return listOrNull<Campus>(`/api/v1/campuses?school_id=${schoolId}&page_size=100`);
 }
 
-export async function getAcademicYears(schoolId: string): Promise<AcademicYear[] | null> {
-  return listOrNull<AcademicYear>(`/api/v1/academic-years?school_id=${schoolId}&page_size=100`);
+// `school_id` is an optional filter server-side (apps/schools/views.py) —
+// omitting it returns every academic year in the org, used by the
+// assessment-creation picker which isn't scoped to one school up front.
+export async function getAcademicYears(schoolId?: string): Promise<AcademicYear[] | null> {
+  const query = schoolId ? `school_id=${schoolId}&` : "";
+  return listOrNull<AcademicYear>(`/api/v1/academic-years?${query}page_size=100`);
 }
 
-export async function getTerms(academicYearId: string): Promise<Term[] | null> {
-  return listOrNull<Term>(`/api/v1/terms?academic_year_id=${academicYearId}&page_size=100`);
+// `academic_year_id` is likewise an optional filter — see getAcademicYears.
+export async function getTerms(academicYearId?: string): Promise<Term[] | null> {
+  const query = academicYearId ? `academic_year_id=${academicYearId}&` : "";
+  return listOrNull<Term>(`/api/v1/terms?${query}page_size=100`);
 }
 
 export async function getDepartments(schoolId: string): Promise<Department[] | null> {

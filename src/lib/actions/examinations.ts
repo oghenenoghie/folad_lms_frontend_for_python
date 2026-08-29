@@ -14,6 +14,28 @@ async function call<T>(path: string, method: string, body?: unknown): Promise<Ac
   return toActionResult<T>(res);
 }
 
+// --- Assessments ---
+export async function createAssessment(input: Record<string, unknown>) {
+  const result = await call("/api/v1/assessments", "POST", input);
+  if (result.success) revalidatePath("/assessments");
+  return result;
+}
+
+export async function updateAssessment(publicId: string, input: Record<string, unknown>) {
+  const result = await call(`/api/v1/assessments/${publicId}`, "PATCH", input);
+  if (result.success) {
+    revalidatePath("/assessments");
+    revalidatePath(`/assessments/${publicId}`);
+  }
+  return result;
+}
+
+export async function deleteAssessment(publicId: string) {
+  const result = await call(`/api/v1/assessments/${publicId}`, "DELETE");
+  if (result.success) revalidatePath("/assessments");
+  return result;
+}
+
 // --- Questions ---
 export async function createQuestion(assessmentId: string, input: Record<string, unknown>) {
   const result = await call("/api/v1/questions", "POST", { ...input, assessment: assessmentId });

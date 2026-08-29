@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { FieldConfig, SelectOption } from "@/components/schools/entity-form-dialog";
-import type { QuestionType } from "@/lib/examinations";
+import type { AssessmentType, QuestionType } from "@/lib/examinations";
 
 // Decimal strings, mirroring the backend's DecimalField(max_digits=5,
 // decimal_places=2) — e.g. "10.00". A plain number type would round-trip
@@ -10,6 +10,73 @@ const decimalString = z
   .string()
   .min(1, "Required")
   .regex(/^\d{1,3}(\.\d{1,2})?$/, "Enter a number like 10 or 10.00");
+
+export const assessmentTypeOptions: SelectOption[] = [
+  { value: "test", label: "Test" },
+  { value: "quiz", label: "Quiz" },
+  { value: "assignment", label: "Assignment" },
+  { value: "project", label: "Project" },
+  { value: "practical", label: "Practical" },
+  { value: "exam", label: "Exam" },
+];
+
+export function assessmentTypeLabel(type: AssessmentType | string): string {
+  return assessmentTypeOptions.find((option) => option.value === type)?.label ?? type;
+}
+
+export const assessmentCreateSchema = z.object({
+  class_subject: z.string().min(1, "Class subject is required"),
+  term: z.string().min(1, "Term is required"),
+  name: z.string().min(1, "Name is required"),
+  assessment_type: z.enum(["test", "quiz", "assignment", "project", "practical", "exam"]),
+  weight: decimalString,
+  max_score: decimalString,
+});
+export type AssessmentCreateFormValues = z.infer<typeof assessmentCreateSchema>;
+
+export function assessmentCreateFields(
+  classSubjectOptions: SelectOption[],
+  termOptions: SelectOption[]
+): FieldConfig<AssessmentCreateFormValues>[] {
+  return [
+    {
+      name: "class_subject",
+      label: "Class subject",
+      type: "select",
+      options: classSubjectOptions,
+      placeholder: "Select a class subject",
+    },
+    { name: "term", label: "Term", type: "select", options: termOptions, placeholder: "Select a term" },
+    { name: "name", label: "Name", type: "text" },
+    { name: "assessment_type", label: "Type", type: "select", options: assessmentTypeOptions },
+    { name: "weight", label: "Weight", type: "text" },
+    { name: "max_score", label: "Max score", type: "text" },
+  ];
+}
+
+export const assessmentCreateDefaults: AssessmentCreateFormValues = {
+  class_subject: "",
+  term: "",
+  name: "",
+  assessment_type: "test",
+  weight: "",
+  max_score: "",
+};
+
+export const assessmentEditSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  assessment_type: z.enum(["test", "quiz", "assignment", "project", "practical", "exam"]),
+  weight: decimalString,
+  max_score: decimalString,
+});
+export type AssessmentEditFormValues = z.infer<typeof assessmentEditSchema>;
+
+export const assessmentEditFields: FieldConfig<AssessmentEditFormValues>[] = [
+  { name: "name", label: "Name", type: "text" },
+  { name: "assessment_type", label: "Type", type: "select", options: assessmentTypeOptions },
+  { name: "weight", label: "Weight", type: "text" },
+  { name: "max_score", label: "Max score", type: "text" },
+];
 
 export const questionTypeOptions: SelectOption[] = [
   { value: "multiple_choice", label: "Multiple choice" },
