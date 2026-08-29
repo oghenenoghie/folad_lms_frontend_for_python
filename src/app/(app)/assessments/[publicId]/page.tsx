@@ -1,14 +1,17 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { Plus } from "lucide-react";
+import { Pencil, Plus } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DeleteConfirmButton } from "@/components/schools/delete-confirm-button";
+import { AssessmentEditFormDialog } from "@/components/examinations/assessment-form-dialog";
 import { QuestionFormDialog } from "@/components/examinations/question-form-dialog";
 import { QuestionCard } from "@/components/examinations/question-card";
 import { GradingSection } from "@/components/examinations/grading-section";
 import { ScoresSection } from "@/components/examinations/scores-section";
 import { getAssessment, getQuestions } from "@/lib/examinations";
-import { createQuestion } from "@/lib/actions/examinations";
-import { questionDefaults } from "@/lib/examinations-forms";
+import { createQuestion, deleteAssessment, updateAssessment } from "@/lib/actions/examinations";
+import { assessmentTypeLabel, questionDefaults } from "@/lib/examinations-forms";
 
 export async function generateMetadata({
   params,
@@ -34,11 +37,36 @@ export default async function AssessmentDetailPage({
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-6">
       <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-xl font-semibold">{assessment.name}</h1>
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-semibold">{assessment.name}</h1>
+            <Badge variant="secondary">{assessmentTypeLabel(assessment.assessment_type)}</Badge>
+          </div>
           <p className="text-sm text-muted-foreground">
             {assessment.max_score} marks · weight {assessment.weight}
           </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <AssessmentEditFormDialog
+            trigger={
+              <Button variant="secondary">
+                <Pencil className="h-4 w-4" />
+                Edit
+              </Button>
+            }
+            title="Edit assessment"
+            defaultValues={{
+              name: assessment.name,
+              assessment_type: assessment.assessment_type,
+              weight: assessment.weight,
+              max_score: assessment.max_score,
+            }}
+            action={updateAssessment.bind(null, assessment.public_id)}
+          />
+          <DeleteConfirmButton
+            description={`Delete ${assessment.name}? Its questions and any student answers reference it, so this cannot be undone.`}
+            action={deleteAssessment.bind(null, assessment.public_id)}
+          />
         </div>
       </div>
 
