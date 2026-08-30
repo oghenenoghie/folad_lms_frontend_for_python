@@ -1,61 +1,14 @@
 import "server-only";
 import { djangoFetch } from "@/lib/session";
 import type { Envelope, Paginated } from "@/lib/api-types";
+import type { Assessment, Question, QuestionOption, Result, StudentAnswer } from "@/lib/examinations-types";
 
-export type AssessmentType = "test" | "quiz" | "assignment" | "project" | "practical" | "exam";
-
-export type Assessment = {
-  public_id: string;
-  class_subject: string;
-  term: string;
-  exam: string | null;
-  name: string;
-  assessment_type: AssessmentType;
-  weight: string;
-  max_score: string;
-};
-
-export type QuestionType = "multiple_choice" | "true_false" | "short_answer" | "essay";
-
-export const OBJECTIVE_QUESTION_TYPES: QuestionType[] = ["multiple_choice", "true_false"];
-
-export type Question = {
-  public_id: string;
-  assessment: string;
-  question_type: QuestionType;
-  text: string;
-  marks: string;
-  sequence: number;
-};
-
-export type QuestionOption = {
-  public_id: string;
-  question: string;
-  text: string;
-  is_correct: boolean;
-  sequence: number;
-};
-
-export type StudentAnswer = {
-  public_id: string;
-  question: string;
-  student: string;
-  selected_option: string | null;
-  text_answer: string;
-  is_correct: boolean | null;
-  marks_awarded: string | null;
-  submitted_at: string;
-};
-
-export type Result = {
-  public_id: string;
-  assessment: string;
-  student: string;
-  score: string;
-  grade: string;
-  remark: string;
-  status: string;
-};
+// Data shapes live in examinations-types.ts (no "server-only" import) so
+// client components can import them without pulling this module's fetch
+// functions — and their djangoFetch/next-headers dependency chain — into
+// the client bundle. Re-exported here so existing server-side callers can
+// keep importing everything from this one module.
+export * from "@/lib/examinations-types";
 
 /** null return means "not permitted to view" (403) — same convention as
  * lib/schools.ts's listOrNull. */
@@ -66,8 +19,12 @@ async function listOrNull<T>(path: string): Promise<T[] | null> {
   return body.success && body.data ? body.data.results : null;
 }
 
-export async function getAssessments(): Promise<Assessment[] | null> {
-  return listOrNull<Assessment>("/api/v1/assessments?page_size=100");
+// `class_subject_id` is an optional filter server-side — used by the
+// student-exams list, which fans this out over each of a student's own
+// class subjects rather than fetching the whole org's assessments.
+export async function getAssessments(classSubjectId?: string): Promise<Assessment[] | null> {
+  const query = classSubjectId ? `class_subject_id=${classSubjectId}&` : "";
+  return listOrNull<Assessment>(`/api/v1/assessments?${query}page_size=100`);
 }
 
 export async function getAssessment(publicId: string): Promise<Assessment | null> {
@@ -97,4 +54,26 @@ export async function getStudentAnswers(questionId: string): Promise<StudentAnsw
 
 export async function getResultsForAssessment(assessmentId: string): Promise<Result[] | null> {
   return listOrNull<Result>(`/api/v1/results?assessment_id=${assessmentId}&page_size=100`);
+}
+
+// --- Student-facing (a student's own answers/results across assessments) ---
+
+export async function getAnswersForStudent(studentId: string): Promise<StudentAnswer[] | null> {
+  return listOrNull<StudentAnswer>(`/api/v1/student-answers?student_id=${studentId}&page_size=100`);
+}
+
+// `question`+`student` is a unique pair (uq_student_answer_question_student
+// on the backend), so this list can only ever hold 0 or 1 row.
+export async function getAnswerForQuestion(
+  questionId: string,
+  studentId: string
+): Promise<StudentAnswer | null> {
+  const answers = await listOrNull<StudentAnswer>(
+    `/api/v1/student-answers?question_id=${questionId}&student_id=${studentId}`
+  );
+  return answers && answers.length > 0 ? answers[0] : null;
+}
+
+export async function getResultsForStudent(studentId: string): Promise<Result[] | null> {
+  return listOrNull<Result>(`/api/v1/results?student_id=${studentId}&page_size=100`);
 }

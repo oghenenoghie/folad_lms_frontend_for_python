@@ -107,3 +107,10 @@ export async function finalizeAssessmentScore(
   if (result.success) revalidatePath(`/assessments/${assessmentId}`);
   return result;
 }
+
+// --- Student-facing: submitting my own answers ---
+export async function submitAnswer(assessmentId: string, input: Record<string, unknown>) {
+  const result = await call("/api/v1/student-answers", "POST", input);
+  if (result.success) revalidatePath(`/my-exams/${assessmentId}`);
+  return result;
+}

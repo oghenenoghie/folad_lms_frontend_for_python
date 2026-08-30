@@ -27,4 +27,10 @@ export type CurrentUser = {
   organization_id: number | null;
   mfa_enabled: boolean;
   roles: string[];
+  // Nullable: a user has at most one of these linked profiles. Used to
+  // address "my own" Student/Staff/Guardian record directly, e.g. a
+  // student submitting their own exam answers.
+  student_public_id: string | null;
+  staff_public_id: string | null;
+  guardian_public_id: string | null;
 };
