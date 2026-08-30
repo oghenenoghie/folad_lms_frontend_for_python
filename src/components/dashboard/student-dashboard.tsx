@@ -42,7 +42,12 @@ const QUICK_LINKS: QuickLink[] = [
     icon: ClipboardList,
     href: "/my-assignments",
   },
-  { label: "Attendance", description: "Your attendance history", icon: CalendarCheck },
+  {
+    label: "Attendance",
+    description: "Your attendance history",
+    icon: CalendarCheck,
+    href: "/my-attendance",
+  },
   { label: "Fees & Invoices", description: "View what you owe and pay online", icon: CreditCard },
   { label: "Report Cards", description: "Download your term report cards", icon: FileText },
   { label: "Library", description: "Books you've borrowed", icon: Library },
