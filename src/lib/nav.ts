@@ -2,6 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import {
   Briefcase,
   Building2,
+  CalendarCheck,
   ClipboardCheck,
   ClipboardList,
   GraduationCap,
@@ -54,6 +55,10 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     heading: "Assignments",
     items: [{ label: "My Assignments", icon: ClipboardCheck, href: "/my-assignments", enabled: true }],
+  },
+  {
+    heading: "Attendance",
+    items: [{ label: "My Attendance", icon: CalendarCheck, href: "/my-attendance", enabled: true }],
   },
   {
     heading: "Administration",
