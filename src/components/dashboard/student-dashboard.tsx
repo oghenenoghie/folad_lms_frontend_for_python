@@ -54,7 +54,12 @@ const QUICK_LINKS: QuickLink[] = [
     icon: CreditCard,
     href: "/my-fees",
   },
-  { label: "Report Cards", description: "Download your term report cards", icon: FileText },
+  {
+    label: "Report Cards",
+    description: "Download your term report cards",
+    icon: FileText,
+    href: "/my-report-cards",
+  },
   { label: "Library", description: "Books you've borrowed", icon: Library },
 ];
 
