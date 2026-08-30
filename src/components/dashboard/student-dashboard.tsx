@@ -1,10 +1,10 @@
 import Link from "next/link";
 import {
+  BookOpen,
   CalendarCheck,
   ClipboardList,
   CreditCard,
   FileText,
-  Library,
   NotebookPen,
   Trophy,
 } from "lucide-react";
@@ -60,7 +60,12 @@ const QUICK_LINKS: QuickLink[] = [
     icon: FileText,
     href: "/my-report-cards",
   },
-  { label: "Library", description: "Books you've borrowed", icon: Library },
+  {
+    label: "Library",
+    description: "Books you've borrowed and any outstanding fines",
+    icon: BookOpen,
+    href: "/my-library",
+  },
 ];
 
 export function StudentDashboard({ summary }: { summary: StudentDashboardSummary }) {

@@ -2,6 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import {
   Briefcase,
   Building2,
+  BookOpen,
   CalendarCheck,
   ClipboardCheck,
   ClipboardList,
@@ -69,6 +70,10 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     heading: "Report Cards",
     items: [{ label: "My Report Cards", icon: FileText, href: "/my-report-cards", enabled: true }],
+  },
+  {
+    heading: "Library",
+    items: [{ label: "My Library", icon: BookOpen, href: "/my-library", enabled: true }],
   },
   {
     heading: "Administration",
