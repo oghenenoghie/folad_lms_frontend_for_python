@@ -5,6 +5,7 @@ import {
   CalendarCheck,
   ClipboardCheck,
   ClipboardList,
+  CreditCard,
   GraduationCap,
   HeartHandshake,
   LayoutDashboard,
@@ -59,6 +60,10 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     heading: "Attendance",
     items: [{ label: "My Attendance", icon: CalendarCheck, href: "/my-attendance", enabled: true }],
+  },
+  {
+    heading: "Fees",
+    items: [{ label: "My Fees", icon: CreditCard, href: "/my-fees", enabled: true }],
   },
   {
     heading: "Administration",
