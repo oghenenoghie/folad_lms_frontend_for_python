@@ -18,14 +18,32 @@ export async function POST() {
     return NextResponse.json({ success: false, message: "no session" }, { status: 401 });
   }
 
-  const djangoRes = await fetch(`${DJANGO_API_URL}/api/v1/auth/refresh`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ refresh }),
-    cache: "no-store",
-  });
+  let djangoRes: Response;
+  try {
+    djangoRes = await fetch(`${DJANGO_API_URL}/api/v1/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh }),
+      cache: "no-store",
+    });
+  } catch {
+    // Django unreachable — fail as a clean error response rather than an
+    // unhandled exception turning into an opaque 500.
+    return NextResponse.json(
+      { success: false, message: "Unable to reach the server. Please try again shortly." },
+      { status: 502 }
+    );
+  }
 
-  const envelope: Envelope<TokenPairData> = await djangoRes.json();
+  let envelope: Envelope<TokenPairData>;
+  try {
+    envelope = await djangoRes.json();
+  } catch {
+    return NextResponse.json(
+      { success: false, message: "Unexpected response from the server." },
+      { status: 502 }
+    );
+  }
 
   if (!djangoRes.ok || !envelope.success || !envelope.data) {
     clearSessionCookies(store);
