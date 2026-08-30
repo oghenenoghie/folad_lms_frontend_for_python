@@ -20,11 +20,17 @@ export async function POST(request: Request) {
       body: JSON.stringify(body),
       cache: "no-store",
     });
-  } catch {
+  } catch (err) {
     // Django unreachable (misconfigured DJANGO_API_URL, network failure,
     // Django down) — fail as a clean error response rather than an
     // unhandled exception, which Next.js would otherwise turn into an
-    // opaque 500 with no indication of what actually went wrong.
+    // opaque 500 with no indication of what actually went wrong. Logged
+    // (DJANGO_API_URL is this app's own public backend URL, not a secret)
+    // so the actual target and error are visible in Vercel's function logs.
+    console.error("[api/auth/login] fetch to Django failed", {
+      djangoApiUrl: DJANGO_API_URL,
+      error: err instanceof Error ? err.message : String(err),
+    });
     return NextResponse.json(
       { success: false, message: "Unable to reach the server. Please try again shortly.", errors: null },
       { status: 502 }
@@ -34,7 +40,12 @@ export async function POST(request: Request) {
   let envelope: Envelope<TokenPairData>;
   try {
     envelope = await djangoRes.json();
-  } catch {
+  } catch (err) {
+    console.error("[api/auth/login] Django response was not valid JSON", {
+      djangoApiUrl: DJANGO_API_URL,
+      status: djangoRes.status,
+      error: err instanceof Error ? err.message : String(err),
+    });
     return NextResponse.json(
       { success: false, message: "Unexpected response from the server.", errors: null },
       { status: 502 }

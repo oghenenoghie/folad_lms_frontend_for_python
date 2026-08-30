@@ -26,9 +26,15 @@ export async function POST() {
       body: JSON.stringify({ refresh }),
       cache: "no-store",
     });
-  } catch {
+  } catch (err) {
     // Django unreachable — fail as a clean error response rather than an
-    // unhandled exception turning into an opaque 500.
+    // unhandled exception turning into an opaque 500. Logged (DJANGO_API_URL
+    // is this app's own public backend URL, not a secret) so the actual
+    // target and error are visible in Vercel's function logs.
+    console.error("[api/auth/refresh] fetch to Django failed", {
+      djangoApiUrl: DJANGO_API_URL,
+      error: err instanceof Error ? err.message : String(err),
+    });
     return NextResponse.json(
       { success: false, message: "Unable to reach the server. Please try again shortly." },
       { status: 502 }
@@ -38,7 +44,12 @@ export async function POST() {
   let envelope: Envelope<TokenPairData>;
   try {
     envelope = await djangoRes.json();
-  } catch {
+  } catch (err) {
+    console.error("[api/auth/refresh] Django response was not valid JSON", {
+      djangoApiUrl: DJANGO_API_URL,
+      status: djangoRes.status,
+      error: err instanceof Error ? err.message : String(err),
+    });
     return NextResponse.json(
       { success: false, message: "Unexpected response from the server." },
       { status: 502 }
