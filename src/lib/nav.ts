@@ -6,6 +6,7 @@ import {
   ClipboardCheck,
   ClipboardList,
   CreditCard,
+  FileText,
   GraduationCap,
   HeartHandshake,
   LayoutDashboard,
@@ -64,6 +65,10 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     heading: "Fees",
     items: [{ label: "My Fees", icon: CreditCard, href: "/my-fees", enabled: true }],
+  },
+  {
+    heading: "Report Cards",
+    items: [{ label: "My Report Cards", icon: FileText, href: "/my-report-cards", enabled: true }],
   },
   {
     heading: "Administration",
