@@ -2,6 +2,31 @@ import "server-only";
 import { djangoFetch } from "@/lib/session";
 import type { Envelope, Paginated } from "@/lib/api-types";
 
+// apps.dashboards.services.dashboard_service.get_summary's shape — one
+// endpoint, response shape branches on the signed-in user's role. Only the
+// "student" shape is modeled precisely here; the others pass through as
+// unknown fields since this frontend only renders the student view so far.
+export type StudentDashboardSummary = {
+  role: "student";
+  attendance: Record<string, number>;
+  upcoming_assignments: number;
+  published_results_count: number;
+  outstanding_fees_minor: number;
+};
+
+export type DashboardSummary =
+  | StudentDashboardSummary
+  | { role: "teacher" | "guardian" | "staff" | "admin"; [key: string]: unknown };
+
+/** null means "not authenticated" or a non-2xx response — callers fall
+ * back to the permission-driven aggregate view below. */
+export async function getMySummary(): Promise<DashboardSummary | null> {
+  const res = await djangoFetch("/api/v1/dashboard/summary");
+  if (!res.ok) return null;
+  const body: Envelope<DashboardSummary> = await res.json();
+  return body.success ? body.data : null;
+}
+
 export type Student = {
   public_id: string;
   admission_number: string;

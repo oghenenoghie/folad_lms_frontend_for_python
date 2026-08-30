@@ -4,11 +4,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { EnrollmentChart } from "@/components/dashboard/enrollment-chart";
 import { StudentsTable } from "@/components/dashboard/students-table";
-import { getDashboardData } from "@/lib/dashboard";
+import { StudentDashboard } from "@/components/dashboard/student-dashboard";
+import { getDashboardData, getMySummary } from "@/lib/dashboard";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
 export default async function DashboardPage() {
+  const summary = await getMySummary();
+  if (summary?.role === "student") {
+    return (
+      <div className="mx-auto max-w-6xl space-y-6 p-6">
+        <h1 className="text-xl font-semibold">Dashboard</h1>
+        <StudentDashboard summary={summary} />
+      </div>
+    );
+  }
+
   const data = await getDashboardData();
 
   if (!data.hasAnyAccess) {
