@@ -41,6 +41,16 @@ export async function POST() {
     );
   }
 
+  // See login/route.ts: a 429 here is infrastructure-level abuse protection
+  // in front of Django, not the app itself, and its body isn't guaranteed
+  // to be JSON.
+  if (djangoRes.status === 429) {
+    return NextResponse.json(
+      { success: false, message: "Too many attempts. Please wait a moment and try again." },
+      { status: 429 }
+    );
+  }
+
   let envelope: Envelope<TokenPairData>;
   try {
     envelope = await djangoRes.json();

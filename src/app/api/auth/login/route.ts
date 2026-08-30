@@ -37,6 +37,18 @@ export async function POST(request: Request) {
     );
   }
 
+  // A 429 here comes from infrastructure in front of Django (e.g. the
+  // hosting platform's own abuse protection), not the app itself — the
+  // app's own login-lockout (auth_service.AccountLockedError) returns 423
+  // with a proper JSON envelope, so this path is specifically the "too
+  // many raw requests" case, whose body isn't guaranteed to be JSON at all.
+  if (djangoRes.status === 429) {
+    return NextResponse.json(
+      { success: false, message: "Too many attempts. Please wait a moment and try again.", errors: null },
+      { status: 429 }
+    );
+  }
+
   let envelope: Envelope<TokenPairData>;
   try {
     envelope = await djangoRes.json();
