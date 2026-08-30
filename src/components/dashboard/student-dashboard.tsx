@@ -36,7 +36,12 @@ const QUICK_LINKS: QuickLink[] = [
     icon: NotebookPen,
     href: "/my-exams",
   },
-  { label: "Assignments", description: "View and submit homework", icon: ClipboardList },
+  {
+    label: "Assignments",
+    description: "View and submit homework",
+    icon: ClipboardList,
+    href: "/my-assignments",
+  },
   { label: "Attendance", description: "Your attendance history", icon: CalendarCheck },
   { label: "Fees & Invoices", description: "View what you owe and pay online", icon: CreditCard },
   { label: "Report Cards", description: "Download your term report cards", icon: FileText },
