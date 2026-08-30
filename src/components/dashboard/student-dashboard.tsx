@@ -48,7 +48,12 @@ const QUICK_LINKS: QuickLink[] = [
     icon: CalendarCheck,
     href: "/my-attendance",
   },
-  { label: "Fees & Invoices", description: "View what you owe and pay online", icon: CreditCard },
+  {
+    label: "Fees & Invoices",
+    description: "View what you owe and your payment history",
+    icon: CreditCard,
+    href: "/my-fees",
+  },
   { label: "Report Cards", description: "Download your term report cards", icon: FileText },
   { label: "Library", description: "Books you've borrowed", icon: Library },
 ];
