@@ -81,3 +81,13 @@ export async function getClassSubjects(classArmId?: string): Promise<ClassSubjec
 export async function getEnrollmentsForStudent(studentId: string): Promise<Enrollment[] | null> {
   return listOrNull<Enrollment>(`/api/v1/enrollments?student_id=${studentId}&page_size=100`);
 }
+
+// Powers the attendance-taking screen's class roster — every active
+// enrollment in one class arm for one academic year.
+export async function getEnrollmentsForClassArm(
+  classArmId: string,
+  academicYearId?: string
+): Promise<Enrollment[] | null> {
+  const yearQuery = academicYearId ? `&academic_year_id=${academicYearId}` : "";
+  return listOrNull<Enrollment>(`/api/v1/enrollments?class_arm_id=${classArmId}${yearQuery}&page_size=200`);
+}

@@ -61,7 +61,10 @@ export const NAV_SECTIONS: NavSection[] = [
   },
   {
     heading: "Attendance",
-    items: [{ label: "My Attendance", icon: CalendarCheck, href: "/my-attendance", enabled: true }],
+    items: [
+      { label: "Take Attendance", icon: CalendarCheck, href: "/attendance", enabled: true },
+      { label: "My Attendance", icon: CalendarCheck, href: "/my-attendance", enabled: true },
+    ],
   },
   {
     heading: "Fees",

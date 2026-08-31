@@ -38,3 +38,12 @@ async function listOrNull<T>(path: string): Promise<T[] | null> {
 export async function getAttendanceForEnrollment(enrollmentId: string): Promise<Attendance[] | null> {
   return listOrNull<Attendance>(`/api/v1/attendance?enrollment_id=${enrollmentId}&page_size=200`);
 }
+
+// Powers the attendance-taking screen: every record already marked for
+// one date, across all enrollments — matched to a class roster client-side
+// by `enrollment`, since the endpoint has no class_arm_id filter of its
+// own (Attendance only carries enrollment + date, not a subject/class
+// dimension).
+export async function getAttendanceForDate(date: string): Promise<Attendance[] | null> {
+  return listOrNull<Attendance>(`/api/v1/attendance?date=${date}&page_size=500`);
+}
