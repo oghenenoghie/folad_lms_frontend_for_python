@@ -27,10 +27,72 @@ export type TopDefaulter = {
   days_overdue: number;
 };
 
-export type RecentActivityEntry = {
+export type LoginEntry = {
   email: string;
   success: boolean;
   created_at: string;
+};
+
+export type GenderBreakdown = {
+  male: number;
+  female: number;
+  other: number;
+  unspecified: number;
+};
+
+export type SeriesPoint = { label: string; count: number };
+
+export type StudentActivity = {
+  title: string;
+  status: string;
+  date: string;
+};
+
+export type MessageEntry = {
+  sender_name: string;
+  sender_email: string;
+  subject: string;
+  preview: string;
+  created_at: string;
+  is_read: boolean;
+};
+
+export type Notice = {
+  title: string;
+  preview: string;
+  audience: string;
+  is_pinned: boolean;
+  published_at: string | null;
+  created_at: string;
+};
+
+export type ActivityEntry = {
+  title: string;
+  body: string;
+  notification_type: string;
+  is_read: boolean;
+  created_at: string;
+};
+
+export type CalendarDay = {
+  date: string;
+  in_month: boolean;
+  is_today: boolean;
+  events: string[];
+};
+
+export type MonthCalendar = {
+  year: number;
+  month: number;
+  month_label: string;
+  weekday_labels: string[];
+  weeks: CalendarDay[][];
+};
+
+export type WeeklyAttendance = {
+  days: { label: string; present_pct: number; absent_pct: number }[];
+  present_pct: number | null;
+  absent_pct: number | null;
 };
 
 // _admin_summary()'s shape — only ever returned to a signed-in user with
@@ -41,7 +103,9 @@ export type RecentActivityEntry = {
 export type AdminDashboardSummary = {
   role: "admin";
   total_students: number;
+  total_teachers: number;
   total_staff: number;
+  total_achievements: number;
   active_enrollments: number;
   net_receivable_minor: number;
   open_hostel_incidents: number;
@@ -53,7 +117,17 @@ export type AdminDashboardSummary = {
   revenue_series: { date: string; amount_minor: number }[];
   attendance_heatmap: AttendanceHeatmap;
   top_defaulters: TopDefaulter[];
-  recent_activity: RecentActivityEntry[];
+  weekly_attendance: WeeklyAttendance;
+  gender_breakdown: GenderBreakdown;
+  enrollment_series_monthly: SeriesPoint[];
+  enrollment_series_weekly: SeriesPoint[];
+  student_activities: StudentActivity[];
+  recent_messages: MessageEntry[];
+  unread_message_count: number;
+  notices: Notice[];
+  recent_activity: ActivityEntry[];
+  calendar: MonthCalendar;
+  recent_logins: LoginEntry[];
 };
 
 export type DashboardSummary =

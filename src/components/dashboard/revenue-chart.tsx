@@ -9,6 +9,7 @@ import {
   Tooltip,
 } from "chart.js";
 import { useTheme } from "next-themes";
+import { EDUPORTAL_COLORS } from "@/lib/eduportal-theme";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip);
 
@@ -29,7 +30,7 @@ export function RevenueChart({ series }: { series: { date: string; amount_minor:
           {
             label: "Collected",
             data: series.map((row) => row.amount_minor / 100),
-            backgroundColor: "#3b82f6",
+            backgroundColor: EDUPORTAL_COLORS.primary,
             borderRadius: 4,
             maxBarThickness: 18,
           },
