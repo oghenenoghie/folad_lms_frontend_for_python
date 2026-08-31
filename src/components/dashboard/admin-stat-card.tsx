@@ -1,11 +1,22 @@
 import type { LucideIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
+// Palette mirrored from https://hr-payroll-wagebook.vercel.app/ — "warn"
+// (warm amber/terracotta tint) for the everyday stats, "primary" (strong
+// forest green) for the one card meant to stand out, matching the
+// Unfold dashboard's "3 warm accent + 1 strong accent" KPI row.
 const TONE_CLASSES = {
-  emerald: "bg-emerald-100 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400",
-  blue: "bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400",
-  violet: "bg-violet-100 text-violet-600 dark:bg-violet-500/10 dark:text-violet-400",
-  amber: "bg-amber-100 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400",
+  warn: "bg-[#ffe6ca] text-[#8a5410] dark:bg-[#ce871b]/15 dark:text-[#f0b158]",
+  primary: "bg-[#104625] text-white",
+  accent: "bg-[#ffe1cd] text-[#8a4a1f] dark:bg-[#bd7138]/15 dark:text-[#e0985c]",
+  good: "bg-[#d0f2d8] text-[#155a30] dark:bg-[#22864a]/15 dark:text-[#4fbf7a]",
+} as const;
+
+const ICON_BADGE_CLASSES = {
+  warn: "bg-[#ce871b]/20 text-[#8a5410] dark:text-[#f0b158]",
+  primary: "bg-white/15 text-white",
+  accent: "bg-[#bd7138]/20 text-[#8a4a1f] dark:text-[#e0985c]",
+  good: "bg-[#22864a]/20 text-[#155a30] dark:text-[#4fbf7a]",
 } as const;
 
 export type StatTone = keyof typeof TONE_CLASSES;
@@ -22,14 +33,14 @@ export function AdminStatCard({
   tone: StatTone;
 }) {
   return (
-    <Card>
+    <Card className={`border-[#e2ded0] ${TONE_CLASSES[tone]}`}>
       <CardContent className="flex items-center gap-4">
-        <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${TONE_CLASSES[tone]}`}>
+        <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${ICON_BADGE_CLASSES[tone]}`}>
           <Icon className="h-5 w-5" />
         </div>
         <div>
           <p className="text-2xl font-semibold leading-none">{value}</p>
-          <p className="mt-1 text-sm text-muted-foreground">{label}</p>
+          <p className={`mt-1 text-sm ${tone === "primary" ? "text-white/80" : "opacity-70"}`}>{label}</p>
         </div>
       </CardContent>
     </Card>

@@ -2,9 +2,9 @@ import type { AttendanceHeatmap } from "@/lib/dashboard";
 
 function cellTone(value: number | null): string {
   if (value === null) return "text-muted-foreground";
-  if (value >= 90) return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300";
-  if (value >= 75) return "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300";
-  return "bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300";
+  if (value >= 90) return "bg-[#d0f2d8] text-[#155a30] dark:bg-[#22864a]/20 dark:text-[#4fbf7a]";
+  if (value >= 75) return "bg-[#ffe6ca] text-[#8a5410] dark:bg-[#ce871b]/20 dark:text-[#f0b158]";
+  return "bg-[#ffe0dc] text-[#8a2524] dark:bg-[#c13c3b]/20 dark:text-[#e37c7b]";
 }
 
 export function AttendanceHeatmapTable({ heatmap }: { heatmap: AttendanceHeatmap }) {

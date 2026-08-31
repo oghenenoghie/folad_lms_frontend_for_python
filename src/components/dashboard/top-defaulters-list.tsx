@@ -16,7 +16,7 @@ export function TopDefaultersList({ defaulters }: { defaulters: TopDefaulter[] }
             <span className="truncate font-medium">{entry.student_name}</span>
             <span className="text-xs text-muted-foreground">{entry.days_overdue} days overdue</span>
           </div>
-          <span className="font-semibold text-rose-600 dark:text-rose-400">
+          <span className="font-semibold text-[#c13c3b]">
             {(entry.outstanding_minor / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}
           </span>
         </div>
