@@ -5,6 +5,7 @@ import { StatCard } from "@/components/dashboard/stat-card";
 import { EnrollmentChart } from "@/components/dashboard/enrollment-chart";
 import { StudentsTable } from "@/components/dashboard/students-table";
 import { StudentDashboard } from "@/components/dashboard/student-dashboard";
+import { AdminDashboard } from "@/components/dashboard/admin-dashboard";
 import { getDashboardData, getMySummary } from "@/lib/dashboard";
 
 export const metadata: Metadata = { title: "Dashboard" };
@@ -21,6 +22,15 @@ export default async function DashboardPage() {
   }
 
   const data = await getDashboardData();
+
+  if (summary?.role === "admin") {
+    return (
+      <div className="mx-auto max-w-6xl space-y-6 p-6">
+        <h1 className="text-xl font-semibold">Dashboard</h1>
+        <AdminDashboard summary={summary} />
+      </div>
+    );
+  }
 
   if (!data.hasAnyAccess) {
     return (
