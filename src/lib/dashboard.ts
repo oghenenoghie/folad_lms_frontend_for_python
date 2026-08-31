@@ -3,9 +3,10 @@ import { djangoFetch } from "@/lib/session";
 import type { Envelope, Paginated } from "@/lib/api-types";
 
 // apps.dashboards.services.dashboard_service.get_summary's shape — one
-// endpoint, response shape branches on the signed-in user's role. Only the
-// "student" shape is modeled precisely here; the others pass through as
-// unknown fields since this frontend only renders the student view so far.
+// endpoint, response shape branches on the signed-in user's role. The
+// "student" and "admin" shapes are modeled precisely here; "teacher" and
+// "guardian" pass through as unknown fields since this frontend doesn't
+// render those views yet.
 export type StudentDashboardSummary = {
   role: "student";
   attendance: Record<string, number>;
@@ -14,9 +15,51 @@ export type StudentDashboardSummary = {
   outstanding_fees_minor: number;
 };
 
+export type AttendanceHeatmap = {
+  dates: string[];
+  classes: { name: string; values: (number | null)[] }[];
+};
+
+export type TopDefaulter = {
+  student_public_id: string;
+  student_name: string;
+  outstanding_minor: number;
+  days_overdue: number;
+};
+
+export type RecentActivityEntry = {
+  email: string;
+  success: boolean;
+  created_at: string;
+};
+
+// _admin_summary()'s shape — only ever returned to a signed-in user with
+// no student/staff/guardian profile linked, i.e. a true org admin
+// account. Every field is a real aggregate query; there is no fabricated
+// "admissions funnel"/"AI insight"/"staff productivity score" data
+// anywhere in this schema, so none of that is modeled here either.
+export type AdminDashboardSummary = {
+  role: "admin";
+  total_students: number;
+  total_staff: number;
+  active_enrollments: number;
+  net_receivable_minor: number;
+  open_hostel_incidents: number;
+  overdue_library_loans: number;
+  today_collection_minor: number;
+  total_receivables_minor: number;
+  attendance_today_pct: number | null;
+  new_admissions_this_month: number;
+  revenue_series: { date: string; amount_minor: number }[];
+  attendance_heatmap: AttendanceHeatmap;
+  top_defaulters: TopDefaulter[];
+  recent_activity: RecentActivityEntry[];
+};
+
 export type DashboardSummary =
   | StudentDashboardSummary
-  | { role: "teacher" | "guardian" | "staff" | "admin"; [key: string]: unknown };
+  | AdminDashboardSummary
+  | { role: "teacher" | "guardian" | "staff"; [key: string]: unknown };
 
 /** null means "not authenticated" or a non-2xx response — callers fall
  * back to the permission-driven aggregate view below. */
