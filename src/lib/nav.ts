@@ -44,7 +44,7 @@ export const NAV_SECTIONS: NavSection[] = [
     items: [
       { label: "Students", icon: GraduationCap, href: "/students", enabled: true },
       { label: "Staff & teachers", icon: Briefcase, href: "/staff", enabled: true },
-      { label: "Parents & guardians", icon: HeartHandshake, enabled: false },
+      { label: "Parents & guardians", icon: HeartHandshake, href: "/guardians", enabled: true },
       { label: "Schools & academics", icon: Building2, href: "/schools", enabled: true },
     ],
   },
