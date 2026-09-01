@@ -80,6 +80,6 @@ export const NAV_SECTIONS: NavSection[] = [
   },
   {
     heading: "Administration",
-    items: [{ label: "Users & roles", icon: Shield, enabled: false }],
+    items: [{ label: "Users & roles", icon: Shield, href: "/users", enabled: true }],
   },
 ];
