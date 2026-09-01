@@ -28,3 +28,14 @@ async function listOrNull<T>(path: string): Promise<T[] | null> {
 export async function getStudentsBySchool(schoolId: string): Promise<Student[] | null> {
   return listOrNull<Student>(`/api/v1/students?school_id=${schoolId}&page_size=200`);
 }
+
+export async function getStudents(): Promise<Student[] | null> {
+  return listOrNull<Student>("/api/v1/students?page_size=100");
+}
+
+export async function getStudent(publicId: string): Promise<Student | null> {
+  const res = await djangoFetch(`/api/v1/students/${publicId}`);
+  if (!res.ok) return null;
+  const body: Envelope<Student> = await res.json();
+  return body.success ? body.data : null;
+}
