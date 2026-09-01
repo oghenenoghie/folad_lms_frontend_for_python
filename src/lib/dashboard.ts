@@ -3,16 +3,58 @@ import { djangoFetch } from "@/lib/session";
 import type { Envelope, Paginated } from "@/lib/api-types";
 
 // apps.dashboards.services.dashboard_service.get_summary's shape — one
-// endpoint, response shape branches on the signed-in user's role. The
-// "student" and "admin" shapes are modeled precisely here; "teacher" and
-// "guardian" pass through as unknown fields since this frontend doesn't
-// render those views yet.
+// endpoint, response shape branches on the signed-in user's role.
 export type StudentDashboardSummary = {
   role: "student";
   attendance: Record<string, number>;
   upcoming_assignments: number;
   published_results_count: number;
   outstanding_fees_minor: number;
+};
+
+export type TeacherPeriod = {
+  period: string;
+  start_time: string;
+  end_time: string;
+  subject: string;
+  class_arm: string;
+};
+
+export type PendingSubmission = {
+  assignment: string;
+  student: string;
+  submitted_at: string;
+  status: string;
+};
+
+export type TeacherDashboardSummary = {
+  role: "teacher";
+  class_subjects_count: number;
+  students_taught_count: number;
+  pending_grading_count: number;
+  todays_periods_count: number;
+  todays_periods: TeacherPeriod[];
+  pending_submissions: PendingSubmission[];
+};
+
+export type GuardianChild = {
+  student: string;
+  name: string;
+  attendance: Record<string, number>;
+  outstanding_fees_minor: number;
+};
+
+export type GuardianDashboardSummary = {
+  role: "guardian";
+  children: GuardianChild[];
+};
+
+// Non-teaching staff get only a position today (see _teacher_summary vs.
+// the plain staff branch in dashboard_service.get_summary) — they fall
+// back to the permission-driven aggregate dashboard below, same as before.
+export type StaffDashboardSummary = {
+  role: "staff";
+  position: string;
 };
 
 export type AttendanceHeatmap = {
@@ -132,8 +174,10 @@ export type AdminDashboardSummary = {
 
 export type DashboardSummary =
   | StudentDashboardSummary
-  | AdminDashboardSummary
-  | { role: "teacher" | "guardian" | "staff"; [key: string]: unknown };
+  | TeacherDashboardSummary
+  | GuardianDashboardSummary
+  | StaffDashboardSummary
+  | AdminDashboardSummary;
 
 /** null means "not authenticated" or a non-2xx response — callers fall
  * back to the permission-driven aggregate view below. */

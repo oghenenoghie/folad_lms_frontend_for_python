@@ -5,6 +5,8 @@ import { StatCard } from "@/components/dashboard/stat-card";
 import { EnrollmentChart } from "@/components/dashboard/enrollment-chart";
 import { StudentsTable } from "@/components/dashboard/students-table";
 import { StudentDashboard } from "@/components/dashboard/student-dashboard";
+import { TeacherDashboard } from "@/components/dashboard/teacher-dashboard";
+import { GuardianDashboard } from "@/components/dashboard/guardian-dashboard";
 import { AdminDashboard } from "@/components/dashboard/admin-dashboard";
 import { getDashboardData, getMySummary } from "@/lib/dashboard";
 
@@ -17,6 +19,24 @@ export default async function DashboardPage() {
       <div className="mx-auto max-w-6xl space-y-6 p-6">
         <h1 className="text-xl font-semibold">Dashboard</h1>
         <StudentDashboard summary={summary} />
+      </div>
+    );
+  }
+
+  if (summary?.role === "teacher") {
+    return (
+      <div className="mx-auto max-w-6xl space-y-6 p-6">
+        <h1 className="text-xl font-semibold">Dashboard</h1>
+        <TeacherDashboard summary={summary} />
+      </div>
+    );
+  }
+
+  if (summary?.role === "guardian") {
+    return (
+      <div className="mx-auto max-w-6xl space-y-6 p-6">
+        <h1 className="text-xl font-semibold">Dashboard</h1>
+        <GuardianDashboard summary={summary} />
       </div>
     );
   }
