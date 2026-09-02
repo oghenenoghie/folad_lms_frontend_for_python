@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StudentEditFormDialog } from "@/components/students/student-form-dialog";
 import { DeleteConfirmButton } from "@/components/schools/delete-confirm-button";
-import { getStudent } from "@/lib/students";
+import { getStudentResult } from "@/lib/students";
 import { getSchool } from "@/lib/schools";
 import { updateStudent, deleteStudent } from "@/lib/actions/students";
 import { enrollmentStatusLabel, genderLabel, NO_GENDER } from "@/lib/student-forms";
@@ -21,14 +21,22 @@ const STATUS_VARIANT: Record<string, "default" | "secondary" | "destructive" | "
 
 export async function generateMetadata({ params }: { params: Promise<{ publicId: string }> }): Promise<Metadata> {
   const { publicId } = await params;
-  const student = await getStudent(publicId);
-  return { title: student ? `${student.first_name} ${student.last_name}` : "Student" };
+  const result = await getStudentResult(publicId);
+  return { title: result.status === "ok" ? `${result.data.first_name} ${result.data.last_name}` : "Student" };
 }
 
 export default async function StudentDetailPage({ params }: { params: Promise<{ publicId: string }> }) {
   const { publicId } = await params;
-  const student = await getStudent(publicId);
-  if (!student) notFound();
+  const result = await getStudentResult(publicId);
+  if (result.status === "forbidden") {
+    return (
+      <div className="mx-auto max-w-5xl space-y-6 p-6">
+        <p className="text-sm text-muted-foreground">You don&apos;t have access to this student.</p>
+      </div>
+    );
+  }
+  if (result.status === "not_found") notFound();
+  const student = result.data;
 
   const school = await getSchool(student.school);
 
