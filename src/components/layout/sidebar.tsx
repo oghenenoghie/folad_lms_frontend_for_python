@@ -5,15 +5,16 @@ import { usePathname } from "next/navigation";
 import { GraduationCap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { NAV_SECTIONS } from "@/lib/nav";
+import { visibleNavSections, type NavAudience } from "@/lib/nav";
 
 function isActive(pathname: string, href?: string) {
   if (!href) return false;
   return href === "/dashboard" ? pathname === href : pathname.startsWith(href);
 }
 
-export function SidebarNav() {
+export function SidebarNav({ role }: { role: NavAudience | null }) {
   const pathname = usePathname();
+  const sections = visibleNavSections(role);
 
   return (
     <div className="flex h-full flex-col">
@@ -22,7 +23,7 @@ export function SidebarNav() {
         <span className="font-semibold">School Management</span>
       </div>
       <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-4">
-        {NAV_SECTIONS.map((section, i) => (
+        {sections.map((section, i) => (
           <div key={section.heading ?? i}>
             {section.heading && (
               <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
