@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Badge } from "@/components/ui/badge";
 import { QuestionAnswerCard } from "@/components/examinations/question-answer-card";
 import { getCurrentUser } from "@/lib/session";
-import { getAssessment, getQuestions, getResultsForStudent } from "@/lib/examinations";
+import { getAssessmentResult, getQuestions, getResultsForStudent } from "@/lib/examinations";
 
 export async function generateMetadata({
   params,
@@ -11,8 +11,8 @@ export async function generateMetadata({
   params: Promise<{ publicId: string }>;
 }): Promise<Metadata> {
   const { publicId } = await params;
-  const assessment = await getAssessment(publicId);
-  return { title: assessment ? assessment.name : "Exam" };
+  const result = await getAssessmentResult(publicId);
+  return { title: result.status === "ok" ? result.data.name : "Exam" };
 }
 
 export default async function MyExamDetailPage({
@@ -34,8 +34,16 @@ export default async function MyExamDetailPage({
     );
   }
 
-  const assessment = await getAssessment(publicId);
-  if (!assessment) notFound();
+  const assessmentResult = await getAssessmentResult(publicId);
+  if (assessmentResult.status === "forbidden") {
+    return (
+      <div className="mx-auto max-w-5xl space-y-6 p-6">
+        <p className="text-sm text-muted-foreground">You don&apos;t have access to this exam.</p>
+      </div>
+    );
+  }
+  if (assessmentResult.status === "not_found") notFound();
+  const assessment = assessmentResult.data;
 
   const [questions, results] = await Promise.all([
     getQuestions(publicId),

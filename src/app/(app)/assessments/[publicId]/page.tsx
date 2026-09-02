@@ -9,7 +9,7 @@ import { QuestionFormDialog } from "@/components/examinations/question-form-dial
 import { QuestionCard } from "@/components/examinations/question-card";
 import { GradingSection } from "@/components/examinations/grading-section";
 import { ScoresSection } from "@/components/examinations/scores-section";
-import { getAssessment, getQuestions } from "@/lib/examinations";
+import { getAssessmentResult, getQuestions } from "@/lib/examinations";
 import { createQuestion, deleteAssessment, updateAssessment } from "@/lib/actions/examinations";
 import { assessmentTypeLabel, questionDefaults } from "@/lib/examinations-forms";
 
@@ -19,8 +19,8 @@ export async function generateMetadata({
   params: Promise<{ publicId: string }>;
 }): Promise<Metadata> {
   const { publicId } = await params;
-  const assessment = await getAssessment(publicId);
-  return { title: assessment ? assessment.name : "Assessment" };
+  const result = await getAssessmentResult(publicId);
+  return { title: result.status === "ok" ? result.data.name : "Assessment" };
 }
 
 export default async function AssessmentDetailPage({
@@ -29,8 +29,16 @@ export default async function AssessmentDetailPage({
   params: Promise<{ publicId: string }>;
 }) {
   const { publicId } = await params;
-  const assessment = await getAssessment(publicId);
-  if (!assessment) notFound();
+  const result = await getAssessmentResult(publicId);
+  if (result.status === "forbidden") {
+    return (
+      <div className="mx-auto max-w-5xl space-y-6 p-6">
+        <p className="text-sm text-muted-foreground">You don&apos;t have access to this assessment.</p>
+      </div>
+    );
+  }
+  if (result.status === "not_found") notFound();
+  const assessment = result.data;
 
   const questions = (await getQuestions(publicId)) ?? [];
 

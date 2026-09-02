@@ -5,19 +5,27 @@ import { Button } from "@/components/ui/button";
 import { GuardianFormDialog } from "@/components/guardians/guardian-form-dialog";
 import { DeleteConfirmButton } from "@/components/schools/delete-confirm-button";
 import { ChildrenSection } from "@/components/guardians/children-section";
-import { getGuardian } from "@/lib/guardians";
+import { getGuardianResult } from "@/lib/guardians";
 import { updateGuardian, deleteGuardian } from "@/lib/actions/guardians";
 
 export async function generateMetadata({ params }: { params: Promise<{ publicId: string }> }): Promise<Metadata> {
   const { publicId } = await params;
-  const guardian = await getGuardian(publicId);
-  return { title: guardian ? `${guardian.first_name} ${guardian.last_name}` : "Guardian" };
+  const result = await getGuardianResult(publicId);
+  return { title: result.status === "ok" ? `${result.data.first_name} ${result.data.last_name}` : "Guardian" };
 }
 
 export default async function GuardianDetailPage({ params }: { params: Promise<{ publicId: string }> }) {
   const { publicId } = await params;
-  const guardian = await getGuardian(publicId);
-  if (!guardian) notFound();
+  const result = await getGuardianResult(publicId);
+  if (result.status === "forbidden") {
+    return (
+      <div className="mx-auto max-w-5xl space-y-6 p-6">
+        <p className="text-sm text-muted-foreground">You don&apos;t have access to this guardian.</p>
+      </div>
+    );
+  }
+  if (result.status === "not_found") notFound();
+  const guardian = result.data;
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-6">

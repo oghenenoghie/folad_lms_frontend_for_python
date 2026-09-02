@@ -1,6 +1,6 @@
 import "server-only";
 import { djangoFetch } from "@/lib/session";
-import type { Envelope, Paginated } from "@/lib/api-types";
+import type { DetailResult, Envelope, Paginated } from "@/lib/api-types";
 
 export type School = {
   public_id: string;
@@ -71,6 +71,19 @@ export async function getSchool(publicId: string): Promise<School | null> {
   if (!res.ok) return null;
   const body: Envelope<School> = await res.json();
   return body.success ? body.data : null;
+}
+
+// Used by the schools detail page, which needs to distinguish "forbidden"
+// (403) from "not found" — see DetailResult. getSchool above stays as-is
+// for its other, secondary callers (staff/students detail pages), which
+// treat any failure as "no school info to show" and don't call notFound().
+export async function getSchoolResult(publicId: string): Promise<DetailResult<School>> {
+  const res = await djangoFetch(`/api/v1/schools/${publicId}`);
+  if (res.status === 403) return { status: "forbidden" };
+  if (!res.ok) return { status: "not_found" };
+  const body: Envelope<School> = await res.json();
+  if (!body.success || !body.data) return { status: "not_found" };
+  return { status: "ok", data: body.data };
 }
 
 export async function getCampuses(schoolId: string): Promise<Campus[] | null> {

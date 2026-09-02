@@ -1,6 +1,6 @@
 import "server-only";
 import { djangoFetch } from "@/lib/session";
-import type { Envelope, Paginated } from "@/lib/api-types";
+import type { DetailResult, Envelope, Paginated } from "@/lib/api-types";
 
 export type EmploymentStatus = "active" | "on_leave" | "terminated";
 
@@ -37,11 +37,13 @@ export async function getStaffList(): Promise<Staff[] | null> {
   return listOrNull<Staff>("/api/v1/staff?page_size=100");
 }
 
-export async function getStaffMember(publicId: string): Promise<Staff | null> {
+export async function getStaffMemberResult(publicId: string): Promise<DetailResult<Staff>> {
   const res = await djangoFetch(`/api/v1/staff/${publicId}`);
-  if (!res.ok) return null;
+  if (res.status === 403) return { status: "forbidden" };
+  if (!res.ok) return { status: "not_found" };
   const body: Envelope<Staff> = await res.json();
-  return body.success ? body.data : null;
+  if (!body.success || !body.data) return { status: "not_found" };
+  return { status: "ok", data: body.data };
 }
 
 // Teacher is a strict one-to-one profile on Staff (§4 ARCHITECTURE.md) —

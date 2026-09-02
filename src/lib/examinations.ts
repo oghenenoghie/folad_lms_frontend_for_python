@@ -1,6 +1,6 @@
 import "server-only";
 import { djangoFetch } from "@/lib/session";
-import type { Envelope, Paginated } from "@/lib/api-types";
+import type { DetailResult, Envelope, Paginated } from "@/lib/api-types";
 import type { Assessment, Question, QuestionOption, Result, StudentAnswer } from "@/lib/examinations-types";
 
 // Data shapes live in examinations-types.ts (no "server-only" import) so
@@ -27,11 +27,13 @@ export async function getAssessments(classSubjectId?: string): Promise<Assessmen
   return listOrNull<Assessment>(`/api/v1/assessments?${query}page_size=100`);
 }
 
-export async function getAssessment(publicId: string): Promise<Assessment | null> {
+export async function getAssessmentResult(publicId: string): Promise<DetailResult<Assessment>> {
   const res = await djangoFetch(`/api/v1/assessments/${publicId}`);
-  if (!res.ok) return null;
+  if (res.status === 403) return { status: "forbidden" };
+  if (!res.ok) return { status: "not_found" };
   const body: Envelope<Assessment> = await res.json();
-  return body.success ? body.data : null;
+  if (!body.success || !body.data) return { status: "not_found" };
+  return { status: "ok", data: body.data };
 }
 
 export async function getQuestions(assessmentId: string): Promise<Question[] | null> {

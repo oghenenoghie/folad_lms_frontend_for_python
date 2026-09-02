@@ -7,19 +7,27 @@ import { DeleteConfirmButton } from "@/components/schools/delete-confirm-button"
 import { CampusesSection } from "@/components/schools/campuses-section";
 import { AcademicYearsSection } from "@/components/schools/academic-years-section";
 import { DepartmentsSection } from "@/components/schools/departments-section";
-import { getSchool } from "@/lib/schools";
+import { getSchoolResult } from "@/lib/schools";
 import { updateSchool, deleteSchool } from "@/lib/actions/schools";
 
 export async function generateMetadata({ params }: { params: Promise<{ publicId: string }> }): Promise<Metadata> {
   const { publicId } = await params;
-  const school = await getSchool(publicId);
-  return { title: school?.name ?? "School" };
+  const result = await getSchoolResult(publicId);
+  return { title: result.status === "ok" ? result.data.name : "School" };
 }
 
 export default async function SchoolDetailPage({ params }: { params: Promise<{ publicId: string }> }) {
   const { publicId } = await params;
-  const school = await getSchool(publicId);
-  if (!school) notFound();
+  const result = await getSchoolResult(publicId);
+  if (result.status === "forbidden") {
+    return (
+      <div className="mx-auto max-w-5xl space-y-6 p-6">
+        <p className="text-sm text-muted-foreground">You don&apos;t have access to this school.</p>
+      </div>
+    );
+  }
+  if (result.status === "not_found") notFound();
+  const school = result.data;
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-6">

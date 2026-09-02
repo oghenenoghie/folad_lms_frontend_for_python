@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getCurrentUser } from "@/lib/session";
 import {
-  getInvoice,
+  getInvoiceResult,
   getInvoiceLines,
   getPaymentsForInvoice,
   getReceiptForPayment,
@@ -22,8 +22,8 @@ export async function generateMetadata({
   params: Promise<{ publicId: string }>;
 }): Promise<Metadata> {
   const { publicId } = await params;
-  const invoice = await getInvoice(publicId);
-  return { title: invoice ? invoice.invoice_number : "Invoice" };
+  const result = await getInvoiceResult(publicId);
+  return { title: result.status === "ok" ? result.data.invoice_number : "Invoice" };
 }
 
 function paymentStatusVariant(status: Payment["status"]): "default" | "secondary" | "destructive" {
@@ -51,8 +51,17 @@ export default async function MyInvoiceDetailPage({
     );
   }
 
-  const invoice = await getInvoice(publicId);
-  if (!invoice || invoice.student !== studentId) notFound();
+  const result = await getInvoiceResult(publicId);
+  if (result.status === "forbidden") {
+    return (
+      <div className="mx-auto max-w-5xl space-y-6 p-6">
+        <p className="text-sm text-muted-foreground">You don&apos;t have access to this invoice.</p>
+      </div>
+    );
+  }
+  if (result.status === "not_found") notFound();
+  const invoice = result.data;
+  if (invoice.student !== studentId) notFound();
 
   const [lines, payments] = await Promise.all([
     getInvoiceLines(publicId),

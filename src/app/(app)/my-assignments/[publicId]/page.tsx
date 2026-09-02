@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SubmissionForm } from "@/components/assignments/submission-form";
 import { SubmissionView } from "@/components/assignments/submission-view";
 import { getCurrentUser } from "@/lib/session";
-import { getAssignment, getSubmissionForAssignment } from "@/lib/assignments";
+import { getAssignmentResult, getSubmissionForAssignment } from "@/lib/assignments";
 
 export async function generateMetadata({
   params,
@@ -12,8 +12,8 @@ export async function generateMetadata({
   params: Promise<{ publicId: string }>;
 }): Promise<Metadata> {
   const { publicId } = await params;
-  const assignment = await getAssignment(publicId);
-  return { title: assignment ? assignment.title : "Assignment" };
+  const result = await getAssignmentResult(publicId);
+  return { title: result.status === "ok" ? result.data.title : "Assignment" };
 }
 
 export default async function MyAssignmentDetailPage({
@@ -35,8 +35,16 @@ export default async function MyAssignmentDetailPage({
     );
   }
 
-  const assignment = await getAssignment(publicId);
-  if (!assignment) notFound();
+  const result = await getAssignmentResult(publicId);
+  if (result.status === "forbidden") {
+    return (
+      <div className="mx-auto max-w-5xl space-y-6 p-6">
+        <p className="text-sm text-muted-foreground">You don&apos;t have access to this assignment.</p>
+      </div>
+    );
+  }
+  if (result.status === "not_found") notFound();
+  const assignment = result.data;
 
   const submission = await getSubmissionForAssignment(publicId, studentId);
 

@@ -1,6 +1,6 @@
 import "server-only";
 import { djangoFetch } from "@/lib/session";
-import type { Envelope, Paginated } from "@/lib/api-types";
+import type { DetailResult, Envelope, Paginated } from "@/lib/api-types";
 
 export type InvoiceStatus = "draft" | "issued" | "partially_paid" | "paid" | "cancelled";
 
@@ -95,11 +95,13 @@ export async function getInvoicesForStudent(studentId: string): Promise<Invoice[
   return listOrNull<Invoice>(`/api/v1/invoices?student_id=${studentId}&page_size=100`);
 }
 
-export async function getInvoice(publicId: string): Promise<Invoice | null> {
+export async function getInvoiceResult(publicId: string): Promise<DetailResult<Invoice>> {
   const res = await djangoFetch(`/api/v1/invoices/${publicId}`);
-  if (!res.ok) return null;
+  if (res.status === 403) return { status: "forbidden" };
+  if (!res.ok) return { status: "not_found" };
   const body: Envelope<Invoice> = await res.json();
-  return body.success ? body.data : null;
+  if (!body.success || !body.data) return { status: "not_found" };
+  return { status: "ok", data: body.data };
 }
 
 export async function getInvoiceLines(invoiceId: string): Promise<InvoiceLine[] | null> {
