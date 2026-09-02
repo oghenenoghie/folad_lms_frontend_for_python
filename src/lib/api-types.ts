@@ -19,6 +19,18 @@ export type Paginated<T> = {
   };
 };
 
+// A detail fetch's outcome, distinguishing "forbidden" (403 — the caller
+// lacks the RBAC permission to view this record, e.g. a student account
+// with no granted role hitting a staff-only /students/{id}) from
+// "not_found" (the record genuinely doesn't exist, or any other non-2xx).
+// Conflating the two into a single null used to trigger Next.js's
+// notFound() for a plain 403, rendering "this doesn't exist" when the
+// real story is "you can't see it".
+export type DetailResult<T> =
+  | { status: "ok"; data: T }
+  | { status: "forbidden" }
+  | { status: "not_found" };
+
 export type CurrentUser = {
   public_id: string;
   email: string;

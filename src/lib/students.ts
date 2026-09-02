@@ -1,6 +1,6 @@
 import "server-only";
 import { djangoFetch } from "@/lib/session";
-import type { Envelope, Paginated } from "@/lib/api-types";
+import type { DetailResult, Envelope, Paginated } from "@/lib/api-types";
 
 export type Student = {
   public_id: string;
@@ -33,9 +33,11 @@ export async function getStudents(): Promise<Student[] | null> {
   return listOrNull<Student>("/api/v1/students?page_size=100");
 }
 
-export async function getStudent(publicId: string): Promise<Student | null> {
+export async function getStudentResult(publicId: string): Promise<DetailResult<Student>> {
   const res = await djangoFetch(`/api/v1/students/${publicId}`);
-  if (!res.ok) return null;
+  if (res.status === 403) return { status: "forbidden" };
+  if (!res.ok) return { status: "not_found" };
   const body: Envelope<Student> = await res.json();
-  return body.success ? body.data : null;
+  if (!body.success || !body.data) return { status: "not_found" };
+  return { status: "ok", data: body.data };
 }
