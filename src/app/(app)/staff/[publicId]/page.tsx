@@ -6,21 +6,29 @@ import { Badge } from "@/components/ui/badge";
 import { StaffEditFormDialog } from "@/components/staff/staff-form-dialog";
 import { DeleteConfirmButton } from "@/components/schools/delete-confirm-button";
 import { TeacherSection } from "@/components/staff/teacher-section";
-import { getStaffMember } from "@/lib/staff";
+import { getStaffMemberResult } from "@/lib/staff";
 import { getSchool, getDepartments } from "@/lib/schools";
 import { updateStaff, deleteStaff } from "@/lib/actions/staff";
 import { employmentStatusLabel, NO_DEPARTMENT } from "@/lib/staff-forms";
 
 export async function generateMetadata({ params }: { params: Promise<{ publicId: string }> }): Promise<Metadata> {
   const { publicId } = await params;
-  const staff = await getStaffMember(publicId);
-  return { title: staff ? `${staff.first_name} ${staff.last_name}` : "Staff" };
+  const result = await getStaffMemberResult(publicId);
+  return { title: result.status === "ok" ? `${result.data.first_name} ${result.data.last_name}` : "Staff" };
 }
 
 export default async function StaffDetailPage({ params }: { params: Promise<{ publicId: string }> }) {
   const { publicId } = await params;
-  const staff = await getStaffMember(publicId);
-  if (!staff) notFound();
+  const result = await getStaffMemberResult(publicId);
+  if (result.status === "forbidden") {
+    return (
+      <div className="mx-auto max-w-5xl space-y-6 p-6">
+        <p className="text-sm text-muted-foreground">You don&apos;t have access to this staff member.</p>
+      </div>
+    );
+  }
+  if (result.status === "not_found") notFound();
+  const staff = result.data;
 
   const [school, departments] = await Promise.all([getSchool(staff.school), getDepartments(staff.school)]);
   const departmentOptions = [

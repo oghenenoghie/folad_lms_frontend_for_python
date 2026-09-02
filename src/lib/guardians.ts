@@ -1,6 +1,6 @@
 import "server-only";
 import { djangoFetch } from "@/lib/session";
-import type { Envelope, Paginated } from "@/lib/api-types";
+import type { DetailResult, Envelope, Paginated } from "@/lib/api-types";
 
 export type Guardian = {
   public_id: string;
@@ -33,11 +33,13 @@ export async function getGuardians(): Promise<Guardian[] | null> {
   return listOrNull<Guardian>("/api/v1/guardians?page_size=100");
 }
 
-export async function getGuardian(publicId: string): Promise<Guardian | null> {
+export async function getGuardianResult(publicId: string): Promise<DetailResult<Guardian>> {
   const res = await djangoFetch(`/api/v1/guardians/${publicId}`);
-  if (!res.ok) return null;
+  if (res.status === 403) return { status: "forbidden" };
+  if (!res.ok) return { status: "not_found" };
   const body: Envelope<Guardian> = await res.json();
-  return body.success ? body.data : null;
+  if (!body.success || !body.data) return { status: "not_found" };
+  return { status: "ok", data: body.data };
 }
 
 export async function getGuardianStudentLinks(guardianId: string): Promise<GuardianStudentLink[] | null> {
