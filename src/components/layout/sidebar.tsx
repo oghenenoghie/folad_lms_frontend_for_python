@@ -20,7 +20,7 @@ export function SidebarNav({ role }: { role: NavAudience | null }) {
     <div className="flex h-full flex-col">
       <div className="flex h-16 shrink-0 items-center gap-2 border-b px-5">
         <GraduationCap className="h-6 w-6 text-primary" />
-        <span className="font-semibold">School Management</span>
+        <span className="font-semibold">FOLAD KIDDIES SCHOOL</span>
       </div>
       <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-4">
         {sections.map((section, i) => (

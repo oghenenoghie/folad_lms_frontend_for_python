@@ -3,73 +3,80 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Palette mirrored from https://hr-payroll-wagebook.vercel.app/ (a warm
+ * cream/forest-green fintech theme) — see lib/eduportal-theme.ts, which
+ * carries the same raw hex values for chart.js configs outside Tailwind's
+ * reach. Defined here as the site's actual design tokens (rather than only
+ * ad-hoc arbitrary-value classes on the admin dashboard widgets) so every
+ * shadcn/ui component — sidebar, buttons, badges, inputs — picks up the
+ * brand colors, not just the KPI cards. */
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --background: #f8f5ea;
+  --foreground: #1d1b10;
+  --card: #fdfcf8;
+  --card-foreground: #1d1b10;
+  --popover: #fdfcf8;
+  --popover-foreground: #1d1b10;
+  --primary: #104625;
+  --primary-foreground: #fdfcf8;
+  --secondary: #ddf1e1;
+  --secondary-foreground: #104625;
+  --muted: #f1ede0;
+  --muted-foreground: #615e51;
+  --accent: #ffe1cd;
+  --accent-foreground: #8a4a1f;
+  --destructive: #c13c3b;
+  --border: #e2ded0;
+  --input: #e2ded0;
+  --ring: #104625;
+  --chart-1: #104625;
+  --chart-2: #bd7138;
+  --chart-3: #22864a;
+  --chart-4: #ce871b;
+  --chart-5: #c13c3b;
+  --sidebar: #fdfcf8;
+  --sidebar-foreground: #1d1b10;
+  --sidebar-primary: #104625;
+  --sidebar-primary-foreground: #fdfcf8;
+  --sidebar-accent: #ddf1e1;
+  --sidebar-accent-foreground: #104625;
+  --sidebar-border: #e2ded0;
+  --sidebar-ring: #104625;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #0f1310;
+  --foreground: #f2efe3;
+  --card: #161b16;
+  --card-foreground: #f2efe3;
+  --popover: #161b16;
+  --popover-foreground: #f2efe3;
+  --primary: #3f9c64;
+  --primary-foreground: #062712;
+  --secondary: #1d2b1f;
+  --secondary-foreground: #d7f2df;
+  --muted: #1b2018;
+  --muted-foreground: #a9a48f;
+  --accent: #4a2c1c;
+  --accent-foreground: #f0b485;
+  --destructive: #e2726f;
+  --border: #2a3026;
+  --input: #2a3026;
+  --ring: #3f9c64;
+  --chart-1: #3f9c64;
+  --chart-2: #e0985c;
+  --chart-3: #4fbf7a;
+  --chart-4: #f0b158;
+  --chart-5: #e2726f;
+  --sidebar: #10150f;
+  --sidebar-foreground: #f2efe3;
+  --sidebar-primary: #3f9c64;
+  --sidebar-primary-foreground: #062712;
+  --sidebar-accent: #1d2b1f;
+  --sidebar-accent-foreground: #d7f2df;
+  --sidebar-border: #2a3026;
+  --sidebar-ring: #3f9c64;
 }
 
 @theme inline {

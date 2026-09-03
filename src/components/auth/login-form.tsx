@@ -81,7 +81,7 @@ export function LoginForm() {
         <CardHeader className="items-center text-center">
           <GraduationCap className="mb-2 h-8 w-8 text-primary" />
           <CardTitle>Sign in</CardTitle>
-          <CardDescription>School Management System</CardDescription>
+          <CardDescription>FOLAD KIDDIES SCHOOL</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
