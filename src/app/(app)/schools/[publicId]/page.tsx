@@ -7,6 +7,7 @@ import { DeleteConfirmButton } from "@/components/schools/delete-confirm-button"
 import { CampusesSection } from "@/components/schools/campuses-section";
 import { AcademicYearsSection } from "@/components/schools/academic-years-section";
 import { DepartmentsSection } from "@/components/schools/departments-section";
+import { ReportCardWeightingSection } from "@/components/report-cards/report-card-weighting-section";
 import { getSchoolResult } from "@/lib/schools";
 import { updateSchool, deleteSchool } from "@/lib/actions/schools";
 
@@ -86,6 +87,7 @@ export default async function SchoolDetailPage({ params }: { params: Promise<{ p
       <CampusesSection schoolId={school.public_id} />
       <AcademicYearsSection schoolId={school.public_id} />
       <DepartmentsSection schoolId={school.public_id} />
+      <ReportCardWeightingSection schoolId={school.public_id} />
     </div>
   );
 }
