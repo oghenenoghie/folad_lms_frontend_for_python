@@ -7,16 +7,19 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { SidebarNav } from "@/components/layout/sidebar";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { UserMenu } from "@/components/layout/user-menu";
+import type { NavAudience } from "@/lib/nav";
 
 export function AppShell({
   children,
   breadcrumbs,
   user,
+  role,
   onSignOut,
 }: {
   children: ReactNode;
   breadcrumbs?: ReactNode;
   user: { name: string; email: string };
+  role: NavAudience | null;
   onSignOut: () => void;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -24,13 +27,13 @@ export function AppShell({
   return (
     <div className="flex min-h-screen">
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r bg-background lg:block">
-        <SidebarNav />
+        <SidebarNav role={role} />
       </aside>
 
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent side="left" className="w-64 p-0">
           <SheetTitle className="sr-only">Navigation</SheetTitle>
-          <SidebarNav />
+          <SidebarNav role={role} />
         </SheetContent>
       </Sheet>
 
