@@ -59,6 +59,29 @@ export type ReportCardWeighting = {
   exam_weight: string;
 };
 
+export type ReportCardBulkExportStatus = "pending" | "processing" | "ready" | "failed";
+
+export type ReportCardBulkExport = {
+  public_id: string;
+  term: string;
+  class_arm: string | null;
+  status: ReportCardBulkExportStatus;
+  report_card_count: number;
+  failed_count: number;
+  file_url: string;
+  error_message: string;
+  started_at: string | null;
+  completed_at: string | null;
+  created_at: string;
+};
+
+export const REPORT_CARD_BULK_EXPORT_STATUS_LABELS: Record<ReportCardBulkExportStatus, string> = {
+  pending: "Pending",
+  processing: "Processing",
+  ready: "Ready",
+  failed: "Failed",
+};
+
 export const REPORT_CARD_STATUS_LABELS: Record<ReportCardStatus, string> = {
   draft: "Draft",
   generated: "Generated",
@@ -133,6 +156,11 @@ export async function getTermLabelMap(): Promise<Map<string, string>> {
   return new Map(
     terms.map((term) => [term.public_id, `${yearNameById.get(term.academic_year) ?? "Unknown year"} — ${term.name}`])
   );
+}
+
+export async function getReportCardBulkExports(termId?: string): Promise<ReportCardBulkExport[] | null> {
+  const query = termId ? `term_id=${termId}&` : "";
+  return listOrNull<ReportCardBulkExport>(`/api/v1/report-cards/bulk-exports?${query}page_size=50`);
 }
 
 // One weighting record per school (uq_report_card_weighting_school on the

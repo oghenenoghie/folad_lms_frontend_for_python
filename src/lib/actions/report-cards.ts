@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { authorizedDjangoFetch } from "@/lib/session";
 import { toActionResult, type ActionResult } from "@/lib/action-result";
-import type { ReportCard, ReportCardWeighting } from "@/lib/report-cards";
+import type { ReportCard, ReportCardBulkExport, ReportCardWeighting } from "@/lib/report-cards";
+import { WHOLE_YEAR } from "@/lib/report-cards-forms";
 
 async function call<T>(path: string, method: string, body?: unknown): Promise<ActionResult<T>> {
   const res = await authorizedDjangoFetch(path, {
@@ -106,5 +107,21 @@ export async function updateReportCardWeighting(
 ): Promise<ActionResult<ReportCardWeighting>> {
   const result = await call<ReportCardWeighting>(`/api/v1/report-card-weightings/${publicId}`, "PATCH", values);
   if (result.success) revalidatePath(`/schools/${schoolId}`);
+  return result;
+}
+
+// --- Bulk export (async, ZIP of every PDF for a term/class arm) ---
+
+export async function requestReportCardBulkExport(
+  values: { term: string; class_arm: string }
+): Promise<ActionResult<ReportCardBulkExport>> {
+  const result = await call<ReportCardBulkExport>("/api/v1/report-cards/bulk-exports/request", "POST", {
+    term: values.term,
+    // WHOLE_YEAR sentinel (Radix Select disallows an empty-string item
+    // value) — omitting class_arm entirely is what tells the backend
+    // "every student enrolled this academic year".
+    ...(values.class_arm !== WHOLE_YEAR ? { class_arm: values.class_arm } : {}),
+  });
+  if (result.success) revalidatePath("/report-cards");
   return result;
 }
