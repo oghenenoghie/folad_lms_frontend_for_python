@@ -24,11 +24,25 @@ export function assessmentTypeLabel(type: AssessmentType | string): string {
   return assessmentTypeOptions.find((option) => option.value === type)?.label ?? type;
 }
 
+// Which report-card bucket (see apps.report_cards) this assessment's score
+// counts toward — independent of assessment_type above: a "test" can be
+// delivered as a CBT, an "exam" can be entirely offline.
+export const scoreCategoryOptions: SelectOption[] = [
+  { value: "ca", label: "Continuous Assessment" },
+  { value: "cbt", label: "CBT" },
+  { value: "exam", label: "Examination" },
+];
+
+export function scoreCategoryLabel(category: string): string {
+  return scoreCategoryOptions.find((option) => option.value === category)?.label ?? category;
+}
+
 export const assessmentCreateSchema = z.object({
   class_subject: z.string().min(1, "Class subject is required"),
   term: z.string().min(1, "Term is required"),
   name: z.string().min(1, "Name is required"),
   assessment_type: z.enum(["test", "quiz", "assignment", "project", "practical", "exam"]),
+  score_category: z.enum(["ca", "cbt", "exam"]),
   weight: decimalString,
   max_score: decimalString,
 });
@@ -49,6 +63,12 @@ export function assessmentCreateFields(
     { name: "term", label: "Term", type: "select", options: termOptions, placeholder: "Select a term" },
     { name: "name", label: "Name", type: "text" },
     { name: "assessment_type", label: "Type", type: "select", options: assessmentTypeOptions },
+    {
+      name: "score_category",
+      label: "Report card category",
+      type: "select",
+      options: scoreCategoryOptions,
+    },
     { name: "weight", label: "Weight", type: "text" },
     { name: "max_score", label: "Max score", type: "text" },
   ];
@@ -59,6 +79,7 @@ export const assessmentCreateDefaults: AssessmentCreateFormValues = {
   term: "",
   name: "",
   assessment_type: "test",
+  score_category: "ca",
   weight: "",
   max_score: "",
 };
@@ -66,6 +87,7 @@ export const assessmentCreateDefaults: AssessmentCreateFormValues = {
 export const assessmentEditSchema = z.object({
   name: z.string().min(1, "Name is required"),
   assessment_type: z.enum(["test", "quiz", "assignment", "project", "practical", "exam"]),
+  score_category: z.enum(["ca", "cbt", "exam"]),
   weight: decimalString,
   max_score: decimalString,
 });
@@ -74,6 +96,12 @@ export type AssessmentEditFormValues = z.infer<typeof assessmentEditSchema>;
 export const assessmentEditFields: FieldConfig<AssessmentEditFormValues>[] = [
   { name: "name", label: "Name", type: "text" },
   { name: "assessment_type", label: "Type", type: "select", options: assessmentTypeOptions },
+  {
+    name: "score_category",
+    label: "Report card category",
+    type: "select",
+    options: scoreCategoryOptions,
+  },
   { name: "weight", label: "Weight", type: "text" },
   { name: "max_score", label: "Max score", type: "text" },
 ];
