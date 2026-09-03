@@ -15,6 +15,10 @@ import {
   reportCardWeightingSchema,
   reportCardWeightingFields,
   type ReportCardWeightingFormValues,
+  reportCardBulkExportRequestSchema,
+  reportCardBulkExportRequestFields,
+  reportCardBulkExportRequestDefaults,
+  type ReportCardBulkExportRequestFormValues,
 } from "@/lib/report-cards-forms";
 import type { ActionResult } from "@/lib/action-result";
 
@@ -85,6 +89,32 @@ export function ReportCardCommentsDialog({
       schema={reportCardCommentsSchema}
       defaultValues={defaultValues}
       fields={reportCardCommentsFields}
+      action={action}
+    />
+  );
+}
+
+export function ReportCardBulkExportRequestDialog({
+  trigger,
+  title,
+  termOptions,
+  classArmOptions,
+  action,
+}: {
+  trigger: ReactNode;
+  title: string;
+  termOptions: SelectOption[];
+  classArmOptions: SelectOption[];
+  action: (values: ReportCardBulkExportRequestFormValues) => Promise<ActionResult<unknown>>;
+}) {
+  return (
+    <EntityFormDialog
+      trigger={trigger}
+      title={title}
+      description="Renders every report card in the selected scope as a PDF and packages them into one ZIP you can download once it's ready."
+      schema={reportCardBulkExportRequestSchema}
+      defaultValues={reportCardBulkExportRequestDefaults}
+      fields={reportCardBulkExportRequestFields(termOptions, classArmOptions)}
       action={action}
     />
   );

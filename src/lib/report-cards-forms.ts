@@ -81,3 +81,35 @@ export const reportCardWeightingDefaults: ReportCardWeightingFormValues = {
   cbt_weight: "30.00",
   exam_weight: "40.00",
 };
+
+// Radix Select disallows an empty-string item value, same reason staff-
+// forms.ts's NO_DEPARTMENT sentinel exists — the actual "no class arm"
+// value the backend wants is simply omitting the field entirely (see
+// lib/actions/report-cards.ts's requestReportCardBulkExport).
+export const WHOLE_YEAR = "__whole_year__";
+
+export const reportCardBulkExportRequestSchema = z.object({
+  term: z.string().min(1, "Term is required"),
+  class_arm: z.string().min(1),
+});
+export type ReportCardBulkExportRequestFormValues = z.infer<typeof reportCardBulkExportRequestSchema>;
+
+export function reportCardBulkExportRequestFields(
+  termOptions: SelectOption[],
+  classArmOptions: SelectOption[]
+): FieldConfig<ReportCardBulkExportRequestFormValues>[] {
+  return [
+    { name: "term", label: "Term", type: "select", options: termOptions, placeholder: "Select a term" },
+    {
+      name: "class_arm",
+      label: "Class",
+      type: "select",
+      options: [{ value: WHOLE_YEAR, label: "Whole year (every class)" }, ...classArmOptions],
+    },
+  ];
+}
+
+export const reportCardBulkExportRequestDefaults: ReportCardBulkExportRequestFormValues = {
+  term: "",
+  class_arm: WHOLE_YEAR,
+};

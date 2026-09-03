@@ -8,6 +8,7 @@ import {
   ReportCardGenerateDialog,
   ReportCardGenerateBulkDialog,
 } from "@/components/report-cards/report-card-form-dialogs";
+import { ReportCardBulkExportsSection } from "@/components/report-cards/report-card-bulk-exports-section";
 import {
   getReportCards,
   getTermLabelMap,
@@ -48,6 +49,16 @@ async function getClassLabels() {
   return new Map(classArms.map((arm) => [arm.public_id, `${classLevelNameById.get(arm.class_level) ?? ""} ${arm.name}`]));
 }
 
+async function getClassArmOptions() {
+  const [classArms, classLevels] = await Promise.all([getClassArms(), getClassLevels()]);
+  if (!classArms || !classLevels) return [];
+  const classLevelNameById = new Map(classLevels.map((l) => [l.public_id, l.name]));
+  return classArms.map((arm) => ({
+    value: arm.public_id,
+    label: `${classLevelNameById.get(arm.class_level) ?? ""} ${arm.name}`.trim(),
+  }));
+}
+
 function statusVariant(status: ReportCardStatus): "default" | "secondary" | "destructive" | "outline" {
   if (status === "published") return "default";
   if (status === "archived") return "outline";
@@ -55,13 +66,15 @@ function statusVariant(status: ReportCardStatus): "default" | "secondary" | "des
 }
 
 export default async function ReportCardsPage() {
-  const [reportCards, studentOptions, termOptions, termLabelById, classLabelById] = await Promise.all([
-    getReportCards(),
-    getStudentOptions(),
-    getTermOptions(),
-    getTermLabelMap(),
-    getClassLabels(),
-  ]);
+  const [reportCards, studentOptions, termOptions, termLabelById, classLabelById, classArmOptions] =
+    await Promise.all([
+      getReportCards(),
+      getStudentOptions(),
+      getTermOptions(),
+      getTermLabelMap(),
+      getClassLabels(),
+      getClassArmOptions(),
+    ]);
 
   const studentNameById = new Map(studentOptions.map((s) => [s.value, s.label]));
 
@@ -158,6 +171,13 @@ export default async function ReportCardsPage() {
           </TableBody>
         </Table>
       )}
+
+      <ReportCardBulkExportsSection
+        termOptions={termOptions}
+        classArmOptions={classArmOptions}
+        termLabelById={termLabelById}
+        classLabelById={classLabelById}
+      />
     </div>
   );
 }
