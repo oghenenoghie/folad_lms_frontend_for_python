@@ -27,7 +27,7 @@ export default async function VerifyReportCardPage({
           )}
           <h1 className="text-xl font-semibold">Report Card Verification</h1>
           <p className="text-sm text-muted-foreground">
-            Confirming a report card issued by the School Management System.
+            Confirming a report card issued by FOLAD KIDDIES SCHOOL.
           </p>
         </div>
 

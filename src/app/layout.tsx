@@ -16,10 +16,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "School Management System",
-    template: "%s · School Management System",
+    default: "FOLAD KIDDIES SCHOOL",
+    template: "%s · FOLAD KIDDIES SCHOOL",
   },
-  description: "School Management System",
+  description: "FOLAD KIDDIES SCHOOL",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
