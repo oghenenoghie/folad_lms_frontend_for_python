@@ -11,7 +11,7 @@ import { GradingSection } from "@/components/examinations/grading-section";
 import { ScoresSection } from "@/components/examinations/scores-section";
 import { getAssessmentResult, getQuestions } from "@/lib/examinations";
 import { createQuestion, deleteAssessment, updateAssessment } from "@/lib/actions/examinations";
-import { assessmentTypeLabel, questionDefaults } from "@/lib/examinations-forms";
+import { assessmentTypeLabel, questionDefaults, scoreCategoryLabel } from "@/lib/examinations-forms";
 
 export async function generateMetadata({
   params,
@@ -49,6 +49,7 @@ export default async function AssessmentDetailPage({
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-semibold">{assessment.name}</h1>
             <Badge variant="secondary">{assessmentTypeLabel(assessment.assessment_type)}</Badge>
+            <Badge variant="outline">{scoreCategoryLabel(assessment.score_category)}</Badge>
           </div>
           <p className="text-sm text-muted-foreground">
             {assessment.max_score} marks · weight {assessment.weight}
@@ -66,6 +67,7 @@ export default async function AssessmentDetailPage({
             defaultValues={{
               name: assessment.name,
               assessment_type: assessment.assessment_type,
+              score_category: assessment.score_category,
               weight: assessment.weight,
               max_score: assessment.max_score,
             }}

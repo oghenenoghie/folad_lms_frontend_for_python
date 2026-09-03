@@ -7,6 +7,10 @@
 
 export type AssessmentType = "test" | "quiz" | "assignment" | "project" | "practical" | "exam";
 
+// Which report-card bucket (see apps.report_cards) this assessment's score
+// counts toward — independent of assessment_type.
+export type ScoreCategory = "ca" | "cbt" | "exam";
+
 export type Assessment = {
   public_id: string;
   class_subject: string;
@@ -14,6 +18,7 @@ export type Assessment = {
   exam: string | null;
   name: string;
   assessment_type: AssessmentType;
+  score_category: ScoreCategory;
   weight: string;
   max_score: string;
 };
