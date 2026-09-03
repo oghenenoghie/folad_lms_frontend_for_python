@@ -118,12 +118,20 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     heading: "Report Cards",
     items: [
+      { label: "Report Cards", icon: FileText, href: "/report-cards", enabled: true, audience: MANAGEMENT },
       {
         label: "My Report Cards",
         icon: FileText,
         href: "/my-report-cards",
         enabled: true,
         audience: ["student"],
+      },
+      {
+        label: "My Children's Report Cards",
+        icon: FileText,
+        href: "/my-childrens-report-cards",
+        enabled: true,
+        audience: ["guardian"],
       },
     ],
   },
