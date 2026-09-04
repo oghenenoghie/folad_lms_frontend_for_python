@@ -25,6 +25,45 @@ export const classArmFields: FieldConfig<ClassArmFormValues>[] = [
 ];
 export const classArmDefaults: ClassArmFormValues = { name: "", is_active: true };
 
+// subject/teacher aren't editable after the fact — a reassignment is a new
+// assignment, not an edit (apps.academics.views.ClassSubjectDetailView.perform_update
+// drops both before calling the service) — so the edit form below only
+// covers the teacher and active status.
+export const classSubjectSchema = z.object({
+  subject: z.string().min(1, "Subject is required"),
+  teacher: z.string().min(1, "Teacher is required"),
+  is_active: z.boolean(),
+});
+export type ClassSubjectFormValues = z.infer<typeof classSubjectSchema>;
+
+export function classSubjectFields(
+  subjectOptions: SelectOption[],
+  teacherOptions: SelectOption[]
+): FieldConfig<ClassSubjectFormValues>[] {
+  return [
+    { name: "subject", label: "Subject", type: "select", options: subjectOptions, placeholder: "Select a subject" },
+    { name: "teacher", label: "Teacher", type: "select", options: teacherOptions, placeholder: "Select a teacher" },
+    { name: "is_active", label: "Active", type: "checkbox" },
+  ];
+}
+
+export const classSubjectDefaults: ClassSubjectFormValues = { subject: "", teacher: "", is_active: true };
+
+export const classSubjectAssignmentSchema = z.object({
+  teacher: z.string().min(1, "Teacher is required"),
+  is_active: z.boolean(),
+});
+export type ClassSubjectAssignmentFormValues = z.infer<typeof classSubjectAssignmentSchema>;
+
+export function classSubjectAssignmentFields(
+  teacherOptions: SelectOption[]
+): FieldConfig<ClassSubjectAssignmentFormValues>[] {
+  return [
+    { name: "teacher", label: "Teacher", type: "select", options: teacherOptions, placeholder: "Select a teacher" },
+    { name: "is_active", label: "Active", type: "checkbox" },
+  ];
+}
+
 export const subjectSchema = z.object({
   name: z.string().min(1, "Name is required"),
   code: z.string().optional(),
