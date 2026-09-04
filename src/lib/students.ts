@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { djangoFetch } from "@/lib/session";
 import type { DetailResult, Envelope, Paginated } from "@/lib/api-types";
 
@@ -33,11 +34,13 @@ export async function getStudents(): Promise<Student[] | null> {
   return listOrNull<Student>("/api/v1/students?page_size=100");
 }
 
-export async function getStudentResult(publicId: string): Promise<DetailResult<Student>> {
+// Wrapped in cache(): the detail page's generateMetadata() and page body
+// both call this with the same publicId per request.
+export const getStudentResult = cache(async (publicId: string): Promise<DetailResult<Student>> => {
   const res = await djangoFetch(`/api/v1/students/${publicId}`);
   if (res.status === 403) return { status: "forbidden" };
   if (!res.ok) return { status: "not_found" };
   const body: Envelope<Student> = await res.json();
   if (!body.success || !body.data) return { status: "not_found" };
   return { status: "ok", data: body.data };
-}
+});

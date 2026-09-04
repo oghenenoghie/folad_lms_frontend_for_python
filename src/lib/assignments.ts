@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { djangoFetch } from "@/lib/session";
 import type { DetailResult, Envelope, Paginated } from "@/lib/api-types";
 import type { Assignment, AssignmentSubmission } from "@/lib/assignments-types";
@@ -22,14 +23,16 @@ export async function getAssignments(classSubjectId?: string): Promise<Assignmen
   return listOrNull<Assignment>(`/api/v1/assignments?${query}page_size=100`);
 }
 
-export async function getAssignmentResult(publicId: string): Promise<DetailResult<Assignment>> {
+// Wrapped in cache(): the detail page's generateMetadata() and page body
+// both call this with the same publicId per request.
+export const getAssignmentResult = cache(async (publicId: string): Promise<DetailResult<Assignment>> => {
   const res = await djangoFetch(`/api/v1/assignments/${publicId}`);
   if (res.status === 403) return { status: "forbidden" };
   if (!res.ok) return { status: "not_found" };
   const body: Envelope<Assignment> = await res.json();
   if (!body.success || !body.data) return { status: "not_found" };
   return { status: "ok", data: body.data };
-}
+});
 
 export async function getSubmissionsForStudent(studentId: string): Promise<AssignmentSubmission[] | null> {
   return listOrNull<AssignmentSubmission>(

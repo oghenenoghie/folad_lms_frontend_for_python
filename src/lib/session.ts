@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { DJANGO_API_URL } from "@/lib/env";
 import { ACCESS_COOKIE, REFRESH_COOKIE, setSessionCookies, clearSessionCookies } from "@/lib/auth-cookies";
@@ -24,12 +25,17 @@ export async function djangoFetch(path: string, init: RequestInit = {}): Promise
   });
 }
 
-export async function getCurrentUser(): Promise<CurrentUser | null> {
+// Wrapped in cache(): (app)/layout.tsx calls this on every page render for
+// the nav/user menu, and most pages under it call it again for their own
+// role checks — without this, that's two (or more) identical /auth/me
+// round trips per request. djangoFetch always sets cache: "no-store", so
+// this wraps the function itself instead, scoped to one request/render.
+export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
   const res = await djangoFetch("/api/v1/auth/me");
   if (!res.ok) return null;
   const body: Envelope<CurrentUser> = await res.json();
   return body.success ? body.data : null;
-}
+});
 
 /** Mutable-cookie version for Route Handlers and Server Actions: retries
  * once through Django's refresh endpoint on a 401 before giving up, so a

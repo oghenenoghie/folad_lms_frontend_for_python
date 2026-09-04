@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { djangoFetch } from "@/lib/session";
 import type { DetailResult, Envelope, Paginated } from "@/lib/api-types";
 
@@ -77,14 +78,20 @@ export async function getSchool(publicId: string): Promise<School | null> {
 // (403) from "not found" — see DetailResult. getSchool above stays as-is
 // for its other, secondary callers (staff/students detail pages), which
 // treat any failure as "no school info to show" and don't call notFound().
-export async function getSchoolResult(publicId: string): Promise<DetailResult<School>> {
+//
+// Wrapped in cache() because the detail page's generateMetadata() and the
+// page body both call this with the same publicId — without it, every
+// page load hits Django twice for identical data (djangoFetch always
+// sets cache: "no-store", so React's own fetch dedup doesn't apply; this
+// wraps the function itself instead, scoped to one request/render).
+export const getSchoolResult = cache(async (publicId: string): Promise<DetailResult<School>> => {
   const res = await djangoFetch(`/api/v1/schools/${publicId}`);
   if (res.status === 403) return { status: "forbidden" };
   if (!res.ok) return { status: "not_found" };
   const body: Envelope<School> = await res.json();
   if (!body.success || !body.data) return { status: "not_found" };
   return { status: "ok", data: body.data };
-}
+});
 
 export async function getCampuses(schoolId: string): Promise<Campus[] | null> {
   return listOrNull<Campus>(`/api/v1/campuses?school_id=${schoolId}&page_size=100`);

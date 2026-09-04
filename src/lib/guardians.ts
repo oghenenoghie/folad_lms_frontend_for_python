@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { djangoFetch } from "@/lib/session";
 import type { DetailResult, Envelope, Paginated } from "@/lib/api-types";
 
@@ -33,14 +34,16 @@ export async function getGuardians(): Promise<Guardian[] | null> {
   return listOrNull<Guardian>("/api/v1/guardians?page_size=100");
 }
 
-export async function getGuardianResult(publicId: string): Promise<DetailResult<Guardian>> {
+// Wrapped in cache(): the detail page's generateMetadata() and page body
+// both call this with the same publicId per request.
+export const getGuardianResult = cache(async (publicId: string): Promise<DetailResult<Guardian>> => {
   const res = await djangoFetch(`/api/v1/guardians/${publicId}`);
   if (res.status === 403) return { status: "forbidden" };
   if (!res.ok) return { status: "not_found" };
   const body: Envelope<Guardian> = await res.json();
   if (!body.success || !body.data) return { status: "not_found" };
   return { status: "ok", data: body.data };
-}
+});
 
 export async function getGuardianStudentLinks(guardianId: string): Promise<GuardianStudentLink[] | null> {
   return listOrNull<GuardianStudentLink>(`/api/v1/guardian-students?guardian_id=${guardianId}&page_size=100`);
