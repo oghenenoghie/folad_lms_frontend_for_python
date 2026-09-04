@@ -16,6 +16,7 @@ import { SubjectsSection } from "@/components/academics/subjects-section";
 import { GradingSchemesSection } from "@/components/examinations/grading-schemes-section";
 import { ReportCardWeightingSection } from "@/components/report-cards/report-card-weighting-section";
 import { DiscountsSection } from "@/components/finance/discounts-section";
+import { AnnouncementsSection } from "@/components/communication/announcements-section";
 import { getSchoolResult } from "@/lib/schools";
 import { updateSchool, deleteSchool } from "@/lib/actions/schools";
 
@@ -104,6 +105,7 @@ export default async function SchoolDetailPage({ params }: { params: Promise<{ p
       <GradingSchemesSection schoolId={school.public_id} />
       <ReportCardWeightingSection schoolId={school.public_id} />
       <DiscountsSection schoolId={school.public_id} />
+      <AnnouncementsSection schoolId={school.public_id} />
     </div>
   );
 }

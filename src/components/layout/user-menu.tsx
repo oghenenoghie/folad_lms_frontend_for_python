@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Key, LogOut } from "lucide-react";
+import { Bell, Key, LogOut } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,6 +47,12 @@ export function UserMenu({
           <Link href="/security" className="flex items-center gap-2">
             <Key className="h-4 w-4" />
             <span>Security</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/notification-preferences" className="flex items-center gap-2">
+            <Bell className="h-4 w-4" />
+            <span>Notifications</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={onSignOut} className="flex items-center gap-2">
