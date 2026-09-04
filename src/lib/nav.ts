@@ -77,6 +77,7 @@ export const NAV_SECTIONS: NavSection[] = [
     heading: "Examinations",
     items: [
       { label: "Assessments", icon: ClipboardList, href: "/assessments", enabled: true, audience: TEACHING },
+      { label: "Exams", icon: NotebookPen, href: "/exams", enabled: true, audience: MANAGEMENT },
       { label: "My Exams", icon: NotebookPen, href: "/my-exams", enabled: true, audience: ["student"] },
     ],
   },

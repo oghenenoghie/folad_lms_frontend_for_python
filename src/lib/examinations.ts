@@ -1,7 +1,18 @@
 import "server-only";
 import { djangoFetch } from "@/lib/session";
 import type { DetailResult, Envelope, Paginated } from "@/lib/api-types";
-import type { Assessment, Question, QuestionOption, Result, StudentAnswer } from "@/lib/examinations-types";
+import type {
+  Assessment,
+  Question,
+  QuestionOption,
+  Result,
+  StudentAnswer,
+  GradingScheme,
+  GradeBand,
+  Exam,
+  ExamSchedule,
+  Invigilator,
+} from "@/lib/examinations-types";
 
 // Data shapes live in examinations-types.ts (no "server-only" import) so
 // client components can import them without pulling this module's fetch
@@ -78,4 +89,40 @@ export async function getAnswerForQuestion(
 
 export async function getResultsForStudent(studentId: string): Promise<Result[] | null> {
   return listOrNull<Result>(`/api/v1/results?student_id=${studentId}&page_size=100`);
+}
+
+// --- Grading schemes / grade bands (school-scoped report-card letter grades) ---
+
+export async function getGradingSchemes(schoolId: string): Promise<GradingScheme[] | null> {
+  return listOrNull<GradingScheme>(`/api/v1/grading-schemes?school_id=${schoolId}&page_size=100`);
+}
+
+export async function getGradeBands(gradingSchemeId: string): Promise<GradeBand[] | null> {
+  return listOrNull<GradeBand>(`/api/v1/grade-bands?grading_scheme_id=${gradingSchemeId}&page_size=100`);
+}
+
+// --- Exams / exam schedules / invigilators (exam logistics) ---
+
+export async function getExams(termId?: string): Promise<Exam[] | null> {
+  const query = termId ? `term_id=${termId}&` : "";
+  return listOrNull<Exam>(`/api/v1/exams?${query}page_size=100`);
+}
+
+export async function getExamResult(publicId: string): Promise<DetailResult<Exam>> {
+  const res = await djangoFetch(`/api/v1/exams/${publicId}`);
+  if (res.status === 403) return { status: "forbidden" };
+  if (!res.ok) return { status: "not_found" };
+  const body: Envelope<Exam> = await res.json();
+  if (!body.success || !body.data) return { status: "not_found" };
+  return { status: "ok", data: body.data };
+}
+
+export async function getExamSchedules(examId: string): Promise<ExamSchedule[] | null> {
+  return listOrNull<ExamSchedule>(`/api/v1/exam-schedules?exam_id=${examId}&page_size=100`);
+}
+
+export async function getInvigilators(examScheduleId: string): Promise<Invigilator[] | null> {
+  return listOrNull<Invigilator>(
+    `/api/v1/invigilators?exam_schedule_id=${examScheduleId}&page_size=100`
+  );
 }
