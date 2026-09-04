@@ -68,3 +68,45 @@ export type Result = {
   remark: string;
   status: string;
 };
+
+export type GradingScheme = {
+  public_id: string;
+  school: string;
+  name: string;
+  is_default: boolean;
+};
+
+export type GradeBand = {
+  public_id: string;
+  grading_scheme: string;
+  grade: string;
+  min_score: string;
+  max_score: string;
+  remark: string;
+};
+
+export type Exam = {
+  public_id: string;
+  school: string;
+  academic_year: string;
+  term: string;
+  name: string;
+  start_date: string;
+  end_date: string;
+};
+
+export type ExamSchedule = {
+  public_id: string;
+  exam: string;
+  class_subject: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  room: string | null;
+};
+
+export type Invigilator = {
+  public_id: string;
+  exam_schedule: string;
+  teacher: string;
+};

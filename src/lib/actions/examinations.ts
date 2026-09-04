@@ -138,3 +138,129 @@ export async function submitAnswer(assessmentId: string, input: Record<string, u
   if (result.success) revalidatePath(`/my-exams/${assessmentId}`);
   return result;
 }
+
+// --- Grading schemes ---
+export async function createGradingScheme(schoolId: string, input: Record<string, unknown>) {
+  const result = await call("/api/v1/grading-schemes", "POST", { ...input, school: schoolId });
+  if (result.success) revalidatePath(`/schools/${schoolId}`);
+  return result;
+}
+
+export async function updateGradingScheme(
+  schoolId: string,
+  publicId: string,
+  input: Record<string, unknown>
+) {
+  const result = await call(`/api/v1/grading-schemes/${publicId}`, "PATCH", input);
+  if (result.success) revalidatePath(`/schools/${schoolId}`);
+  return result;
+}
+
+export async function deleteGradingScheme(schoolId: string, publicId: string) {
+  const result = await call(`/api/v1/grading-schemes/${publicId}`, "DELETE");
+  if (result.success) revalidatePath(`/schools/${schoolId}`);
+  return result;
+}
+
+// --- Grade bands ---
+export async function createGradeBand(
+  schoolId: string,
+  gradingSchemeId: string,
+  input: Record<string, unknown>
+) {
+  const result = await call("/api/v1/grade-bands", "POST", { ...input, grading_scheme: gradingSchemeId });
+  if (result.success) revalidatePath(`/schools/${schoolId}`);
+  return result;
+}
+
+export async function updateGradeBand(schoolId: string, publicId: string, input: Record<string, unknown>) {
+  const result = await call(`/api/v1/grade-bands/${publicId}`, "PATCH", input);
+  if (result.success) revalidatePath(`/schools/${schoolId}`);
+  return result;
+}
+
+export async function deleteGradeBand(schoolId: string, publicId: string) {
+  const result = await call(`/api/v1/grade-bands/${publicId}`, "DELETE");
+  if (result.success) revalidatePath(`/schools/${schoolId}`);
+  return result;
+}
+
+// --- Exams ---
+export async function createExam(input: Record<string, unknown>) {
+  const result = await call("/api/v1/exams", "POST", input);
+  if (result.success) revalidatePath("/exams");
+  return result;
+}
+
+export async function updateExam(publicId: string, input: Record<string, unknown>) {
+  const result = await call(`/api/v1/exams/${publicId}`, "PATCH", input);
+  if (result.success) {
+    revalidatePath("/exams");
+    revalidatePath(`/exams/${publicId}`);
+  }
+  return result;
+}
+
+export async function deleteExam(publicId: string) {
+  const result = await call(`/api/v1/exams/${publicId}`, "DELETE");
+  if (result.success) revalidatePath("/exams");
+  return result;
+}
+
+// --- Exam schedules ---
+// `room` is a nullable FK — an empty string from the "no room" select
+// state has to become an actual `null`, same reasoning as
+// actions/academics.ts's normalizeEffectiveTo (a nullable
+// PublicIdRelatedField 400s on "", it only accepts a real public_id or
+// null).
+function normalizeRoom(input: Record<string, unknown>) {
+  return { ...input, room: input.room || null };
+}
+
+export async function createExamSchedule(examId: string, input: Record<string, unknown>) {
+  const result = await call("/api/v1/exam-schedules", "POST", {
+    ...normalizeRoom(input),
+    exam: examId,
+  });
+  if (result.success) revalidatePath(`/exams/${examId}`);
+  return result;
+}
+
+export async function updateExamSchedule(
+  examId: string,
+  publicId: string,
+  input: Record<string, unknown>
+) {
+  const result = await call(`/api/v1/exam-schedules/${publicId}`, "PATCH", normalizeRoom(input));
+  if (result.success) revalidatePath(`/exams/${examId}`);
+  return result;
+}
+
+export async function deleteExamSchedule(examId: string, publicId: string) {
+  const result = await call(`/api/v1/exam-schedules/${publicId}`, "DELETE");
+  if (result.success) revalidatePath(`/exams/${examId}`);
+  return result;
+}
+
+// --- Invigilators ---
+// No update action: reassigning an invigilator is unassign-then-assign
+// server-side (see apps.examinations.services.invigilator_service) —
+// InvigilatorDetailView only supports DELETE.
+export async function createInvigilator(
+  examId: string,
+  examScheduleId: string,
+  input: Record<string, unknown>
+) {
+  const result = await call("/api/v1/invigilators", "POST", {
+    ...input,
+    exam_schedule: examScheduleId,
+  });
+  if (result.success) revalidatePath(`/exams/${examId}`);
+  return result;
+}
+
+export async function deleteInvigilator(examId: string, publicId: string) {
+  const result = await call(`/api/v1/invigilators/${publicId}`, "DELETE");
+  if (result.success) revalidatePath(`/exams/${examId}`);
+  return result;
+}

@@ -53,3 +53,7 @@ export async function getTeacherForStaff(staffId: string): Promise<Teacher | nul
   const teachers = await listOrNull<Teacher>(`/api/v1/teachers?staff_id=${staffId}&page_size=1`);
   return teachers && teachers.length > 0 ? teachers[0] : null;
 }
+
+export async function getTeachers(): Promise<Teacher[] | null> {
+  return listOrNull<Teacher>("/api/v1/teachers?page_size=200");
+}
