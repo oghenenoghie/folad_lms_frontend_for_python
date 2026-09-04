@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { StudentEditFormDialog } from "@/components/students/student-form-dialog";
 import { DeleteConfirmButton } from "@/components/schools/delete-confirm-button";
 import { EnrollmentSection } from "@/components/academics/enrollment-section";
+import { ScholarshipsSection } from "@/components/finance/scholarships-section";
 import { getStudentResult } from "@/lib/students";
 import { getSchool } from "@/lib/schools";
 import { updateStudent, deleteStudent } from "@/lib/actions/students";
@@ -119,6 +120,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
       </div>
 
       <EnrollmentSection studentId={student.public_id} schoolId={student.school} />
+      <ScholarshipsSection studentId={student.public_id} schoolId={student.school} />
     </div>
   );
 }
