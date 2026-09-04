@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { Pencil } from "lucide-react";
+import { MessageSquare, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GuardianFormDialog } from "@/components/guardians/guardian-form-dialog";
 import { DeleteConfirmButton } from "@/components/schools/delete-confirm-button";
 import { ChildrenSection } from "@/components/guardians/children-section";
+import { ComposeMessageDialog } from "@/components/messages/compose-message-dialog";
 import { getGuardianResult } from "@/lib/guardians";
 import { updateGuardian, deleteGuardian } from "@/lib/actions/guardians";
 
@@ -37,6 +38,18 @@ export default async function GuardianDetailPage({ params }: { params: Promise<{
           <p className="text-sm text-muted-foreground">{guardian.occupation || "No occupation on file"}</p>
         </div>
         <div className="flex items-center gap-2">
+          {guardian.user && (
+            <ComposeMessageDialog
+              trigger={
+                <Button variant="secondary">
+                  <MessageSquare className="h-4 w-4" />
+                  Message
+                </Button>
+              }
+              recipientPublicId={guardian.user}
+              recipientName={`${guardian.first_name} ${guardian.last_name}`}
+            />
+          )}
           <GuardianFormDialog
             trigger={
               <Button variant="secondary">
