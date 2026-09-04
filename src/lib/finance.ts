@@ -2,6 +2,36 @@ import "server-only";
 import { djangoFetch } from "@/lib/session";
 import type { DetailResult, Envelope, Paginated } from "@/lib/api-types";
 
+export type FeeStructure = {
+  public_id: string;
+  school: string;
+  academic_year: string;
+  term: string;
+  name: string;
+  is_active: boolean;
+};
+
+export type FeeItem = {
+  public_id: string;
+  fee_structure: string;
+  name: string;
+  amount_minor: number;
+  currency_code: string;
+  is_mandatory: boolean;
+};
+
+export type RefundStatus = "pending" | "completed" | "failed";
+
+export type Refund = {
+  public_id: string;
+  payment: string;
+  amount_minor: number;
+  currency_code: string;
+  reason: string;
+  status: RefundStatus;
+  processed_at: string;
+};
+
 export type InvoiceStatus = "draft" | "issued" | "partially_paid" | "paid" | "cancelled";
 
 export type Invoice = {
@@ -54,6 +84,12 @@ export type Receipt = {
   error_message: string;
 };
 
+export const REFUND_STATUS_LABELS: Record<RefundStatus, string> = {
+  pending: "Pending",
+  completed: "Completed",
+  failed: "Failed",
+};
+
 export const INVOICE_STATUS_LABELS: Record<InvoiceStatus, string> = {
   draft: "Draft",
   issued: "Issued",
@@ -93,6 +129,25 @@ async function listOrNull<T>(path: string): Promise<T[] | null> {
 
 export async function getInvoicesForStudent(studentId: string): Promise<Invoice[] | null> {
   return listOrNull<Invoice>(`/api/v1/invoices?student_id=${studentId}&page_size=100`);
+}
+
+// --- Admin back-office (all invoices, not scoped to one student) ---
+
+export async function getInvoices(): Promise<Invoice[] | null> {
+  return listOrNull<Invoice>(`/api/v1/invoices?page_size=200`);
+}
+
+export async function getFeeStructures(termId?: string): Promise<FeeStructure[] | null> {
+  const query = termId ? `term_id=${termId}&` : "";
+  return listOrNull<FeeStructure>(`/api/v1/fee-structures?${query}page_size=100`);
+}
+
+export async function getFeeItems(feeStructureId: string): Promise<FeeItem[] | null> {
+  return listOrNull<FeeItem>(`/api/v1/fee-items?fee_structure_id=${feeStructureId}&page_size=100`);
+}
+
+export async function getRefundsForPayment(paymentId: string): Promise<Refund[] | null> {
+  return listOrNull<Refund>(`/api/v1/refunds?payment_id=${paymentId}&page_size=100`);
 }
 
 export async function getInvoiceResult(publicId: string): Promise<DetailResult<Invoice>> {
