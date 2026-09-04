@@ -52,21 +52,24 @@ async function listOrNull<T>(path: string): Promise<T[] | null> {
   return body.success && body.data ? body.data.results : null;
 }
 
-// class_level_id/school_id/etc. filters are all optional server-side
-// (apps/academics/views.py) — omitted here on purpose, since the
-// assessment-creation picker needs every class-subject in the org to
-// build one flat "Subject — Class arm" label list, not one school/level
-// at a time.
-export async function getClassLevels(): Promise<ClassLevel[] | null> {
-  return listOrNull<ClassLevel>("/api/v1/class-levels?page_size=100");
+// campus_id/class_level_id/school_id are all optional filters server-side
+// (apps/academics/views.py) — most existing callers omit them to build one
+// flat, org-wide label list (e.g. the assessment-creation picker's
+// "Subject — Class arm" options); the academics setup UI passes them to
+// scope a fetch to one campus/level/school at a time.
+export async function getClassLevels(campusId?: string): Promise<ClassLevel[] | null> {
+  const query = campusId ? `campus_id=${campusId}&` : "";
+  return listOrNull<ClassLevel>(`/api/v1/class-levels?${query}page_size=100`);
 }
 
-export async function getClassArms(): Promise<ClassArm[] | null> {
-  return listOrNull<ClassArm>("/api/v1/class-arms?page_size=100");
+export async function getClassArms(classLevelId?: string): Promise<ClassArm[] | null> {
+  const query = classLevelId ? `class_level_id=${classLevelId}&` : "";
+  return listOrNull<ClassArm>(`/api/v1/class-arms?${query}page_size=100`);
 }
 
-export async function getSubjects(): Promise<Subject[] | null> {
-  return listOrNull<Subject>("/api/v1/subjects?page_size=100");
+export async function getSubjects(schoolId?: string): Promise<Subject[] | null> {
+  const query = schoolId ? `school_id=${schoolId}&` : "";
+  return listOrNull<Subject>(`/api/v1/subjects?${query}page_size=100`);
 }
 
 // `class_arm_id` is optional here, unlike the functions above — the

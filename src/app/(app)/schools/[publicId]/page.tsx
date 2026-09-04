@@ -8,6 +8,8 @@ import { CampusesSection } from "@/components/schools/campuses-section";
 import { AcademicYearsSection } from "@/components/schools/academic-years-section";
 import { DepartmentsSection } from "@/components/schools/departments-section";
 import { SchoolStudentsSection } from "@/components/schools/school-students-section";
+import { ClassLevelsSection } from "@/components/academics/class-levels-section";
+import { SubjectsSection } from "@/components/academics/subjects-section";
 import { GradingSchemesSection } from "@/components/examinations/grading-schemes-section";
 import { ReportCardWeightingSection } from "@/components/report-cards/report-card-weighting-section";
 import { getSchoolResult } from "@/lib/schools";
@@ -88,6 +90,8 @@ export default async function SchoolDetailPage({ params }: { params: Promise<{ p
 
       <SchoolStudentsSection schoolId={school.public_id} />
       <CampusesSection schoolId={school.public_id} />
+      <ClassLevelsSection schoolId={school.public_id} />
+      <SubjectsSection schoolId={school.public_id} />
       <AcademicYearsSection schoolId={school.public_id} />
       <DepartmentsSection schoolId={school.public_id} />
       <GradingSchemesSection schoolId={school.public_id} />

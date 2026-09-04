@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StudentEditFormDialog } from "@/components/students/student-form-dialog";
 import { DeleteConfirmButton } from "@/components/schools/delete-confirm-button";
+import { EnrollmentSection } from "@/components/academics/enrollment-section";
 import { getStudentResult } from "@/lib/students";
 import { getSchool } from "@/lib/schools";
 import { updateStudent, deleteStudent } from "@/lib/actions/students";
@@ -116,6 +117,8 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
           <p>{student.user ? student.email || "Provisioned (system-generated address)" : "Not yet provisioned"}</p>
         </div>
       </div>
+
+      <EnrollmentSection studentId={student.public_id} schoolId={student.school} />
     </div>
   );
 }
