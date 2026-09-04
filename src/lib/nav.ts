@@ -4,6 +4,7 @@ import {
   Building2,
   BookOpen,
   CalendarCheck,
+  CalendarDays,
   ClipboardCheck,
   ClipboardList,
   CreditCard,
@@ -111,6 +112,12 @@ export const NAV_SECTIONS: NavSection[] = [
         enabled: true,
         audience: ["student"],
       },
+    ],
+  },
+  {
+    heading: "Timetable",
+    items: [
+      { label: "Timetable", icon: CalendarDays, href: "/timetable", enabled: true, audience: TEACHING },
     ],
   },
   {
