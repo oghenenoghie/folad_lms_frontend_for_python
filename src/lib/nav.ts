@@ -1,5 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import {
+  BedDouble,
   Briefcase,
   Building2,
   BookOpen,
@@ -152,6 +153,12 @@ export const NAV_SECTIONS: NavSection[] = [
     items: [
       { label: "Library Desk", icon: BookOpen, href: "/library-desk", enabled: true, audience: MANAGEMENT },
       { label: "My Library", icon: BookOpen, href: "/my-library", enabled: true, audience: ["student"] },
+    ],
+  },
+  {
+    heading: "Hostel",
+    items: [
+      { label: "Hostel Desk", icon: BedDouble, href: "/hostel-desk", enabled: true, audience: MANAGEMENT },
     ],
   },
   {
