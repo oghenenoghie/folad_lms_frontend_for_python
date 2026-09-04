@@ -8,6 +8,7 @@ import { CampusesSection } from "@/components/schools/campuses-section";
 import { AcademicYearsSection } from "@/components/schools/academic-years-section";
 import { DepartmentsSection } from "@/components/schools/departments-section";
 import { SchoolStudentsSection } from "@/components/schools/school-students-section";
+import { FeeStructuresSection } from "@/components/finance/fee-structures-section";
 import { LibraryBooksSection } from "@/components/library/library-books-section";
 import { LibraryMembersSection } from "@/components/library/library-members-section";
 import { ClassLevelsSection } from "@/components/academics/class-levels-section";
@@ -96,6 +97,7 @@ export default async function SchoolDetailPage({ params }: { params: Promise<{ p
       <SubjectsSection schoolId={school.public_id} />
       <AcademicYearsSection schoolId={school.public_id} />
       <DepartmentsSection schoolId={school.public_id} />
+      <FeeStructuresSection schoolId={school.public_id} />
       <LibraryBooksSection schoolId={school.public_id} />
       <LibraryMembersSection schoolId={school.public_id} />
       <GradingSchemesSection schoolId={school.public_id} />

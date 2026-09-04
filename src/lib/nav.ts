@@ -115,7 +115,10 @@ export const NAV_SECTIONS: NavSection[] = [
   },
   {
     heading: "Fees",
-    items: [{ label: "My Fees", icon: CreditCard, href: "/my-fees", enabled: true, audience: ["student"] }],
+    items: [
+      { label: "Invoices", icon: CreditCard, href: "/invoices", enabled: true, audience: MANAGEMENT },
+      { label: "My Fees", icon: CreditCard, href: "/my-fees", enabled: true, audience: ["student"] },
+    ],
   },
   {
     heading: "Report Cards",
