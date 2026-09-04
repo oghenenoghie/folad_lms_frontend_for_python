@@ -36,6 +36,14 @@ export async function QuestionAnswerCard({
         <CardTitle className="text-base font-medium">{question.text}</CardTitle>
       </CardHeader>
       <CardContent>
+        {question.image_url && (
+          // eslint-disable-next-line @next/next/no-img-element -- a presigned storage URL, not an app asset next/image can optimize
+          <img
+            src={question.image_url}
+            alt={`Diagram for question ${question.sequence}`}
+            className="mb-3 max-h-64 rounded-md border object-contain"
+          />
+        )}
         {answer ? (
           <div className="space-y-2 text-sm">
             {isObjective ? (

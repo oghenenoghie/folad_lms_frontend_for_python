@@ -59,6 +59,30 @@ export async function deleteQuestion(assessmentId: string, publicId: string) {
   return result;
 }
 
+// Multipart, not JSON — same reasoning as actions/assignments.ts's
+// submitAssignmentFile: the upload endpoint takes a real file, not a
+// JSON body, and fetch() derives the multipart/form-data boundary from
+// the FormData itself, so no Content-Type header is set here.
+export async function uploadQuestionImage(
+  assessmentId: string,
+  questionId: string,
+  formData: FormData
+): Promise<ActionResult<unknown>> {
+  const res = await authorizedDjangoFetch(`/api/v1/questions/${questionId}/image`, {
+    method: "POST",
+    body: formData,
+  });
+  const result = await toActionResult(res);
+  if (result.success) revalidatePath(`/assessments/${assessmentId}`);
+  return result;
+}
+
+export async function removeQuestionImage(assessmentId: string, questionId: string) {
+  const result = await call(`/api/v1/questions/${questionId}/image`, "DELETE");
+  if (result.success) revalidatePath(`/assessments/${assessmentId}`);
+  return result;
+}
+
 // --- Question options ---
 export async function createQuestionOption(
   assessmentId: string,

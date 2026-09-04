@@ -34,6 +34,10 @@ export type Question = {
   text: string;
   marks: string;
   sequence: number;
+  // A diagram/figure the teacher attached (e.g. "label the diagram
+  // below") — null when none, set via actions/examinations.ts's
+  // uploadQuestionImage, never through the plain create/update form.
+  image_url: string | null;
 };
 
 export type QuestionOption = {
