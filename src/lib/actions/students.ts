@@ -5,6 +5,7 @@ import { authorizedDjangoFetch } from "@/lib/session";
 import { toActionResult, type ActionResult } from "@/lib/action-result";
 import { NO_GENDER } from "@/lib/student-forms";
 import type { Student } from "@/lib/students";
+import type { BulkImportResult } from "@/lib/bulk-import";
 
 async function call<T>(path: string, method: string, body?: unknown): Promise<ActionResult<T>> {
   const res = await authorizedDjangoFetch(path, {
@@ -58,6 +59,16 @@ export async function updateStudent(publicId: string, input: Record<string, unkn
 
 export async function deleteStudent(publicId: string) {
   const result = await call(`/api/v1/students/${publicId}`, "DELETE");
+  if (result.success) revalidatePath("/students");
+  return result;
+}
+
+export async function bulkImportStudents(formData: FormData): Promise<ActionResult<BulkImportResult>> {
+  const res = await authorizedDjangoFetch("/api/v1/students/bulk-import", {
+    method: "POST",
+    body: formData,
+  });
+  const result = await toActionResult<BulkImportResult>(res);
   if (result.success) revalidatePath("/students");
   return result;
 }
