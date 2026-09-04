@@ -33,8 +33,9 @@ async function listOrNull<T>(path: string): Promise<T[] | null> {
   return body.success && body.data ? body.data.results : null;
 }
 
-export async function getStaffList(): Promise<Staff[] | null> {
-  return listOrNull<Staff>("/api/v1/staff?page_size=100");
+export async function getStaffList(schoolId?: string): Promise<Staff[] | null> {
+  const query = schoolId ? `school_id=${schoolId}&` : "";
+  return listOrNull<Staff>(`/api/v1/staff?${query}page_size=100`);
 }
 
 export async function getStaffMemberResult(publicId: string): Promise<DetailResult<Staff>> {
@@ -54,6 +55,7 @@ export async function getTeacherForStaff(staffId: string): Promise<Teacher | nul
   return teachers && teachers.length > 0 ? teachers[0] : null;
 }
 
-export async function getTeachers(): Promise<Teacher[] | null> {
-  return listOrNull<Teacher>("/api/v1/teachers?page_size=200");
+export async function getTeachers(schoolId?: string): Promise<Teacher[] | null> {
+  const query = schoolId ? `school_id=${schoolId}&` : "";
+  return listOrNull<Teacher>(`/api/v1/teachers?${query}page_size=200`);
 }

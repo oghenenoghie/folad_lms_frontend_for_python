@@ -51,6 +51,29 @@ export async function deleteClassArm(schoolId: string, publicId: string) {
   return result;
 }
 
+// --- Class subjects (teacher-subject assignments, nested under a class arm) ---
+export async function createClassSubject(schoolId: string, classArmId: string, input: Record<string, unknown>) {
+  const result = await call("/api/v1/class-subjects", "POST", { ...input, class_arm: classArmId });
+  if (result.success) revalidatePath(`/schools/${schoolId}`);
+  return result;
+}
+
+export async function updateClassSubjectAssignment(
+  schoolId: string,
+  publicId: string,
+  input: Record<string, unknown>
+) {
+  const result = await call(`/api/v1/class-subjects/${publicId}`, "PATCH", input);
+  if (result.success) revalidatePath(`/schools/${schoolId}`);
+  return result;
+}
+
+export async function deleteClassSubject(schoolId: string, publicId: string) {
+  const result = await call(`/api/v1/class-subjects/${publicId}`, "DELETE");
+  if (result.success) revalidatePath(`/schools/${schoolId}`);
+  return result;
+}
+
 // --- Subjects (school-wide) ---
 export async function createSubject(schoolId: string, input: Record<string, unknown>) {
   const result = await call("/api/v1/subjects", "POST", { ...input, school: schoolId });
