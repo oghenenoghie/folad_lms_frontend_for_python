@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { djangoFetch } from "@/lib/session";
 import type { DetailResult, Envelope, Paginated } from "@/lib/api-types";
 import type { Assessment, Question, QuestionOption, Result, StudentAnswer } from "@/lib/examinations-types";
@@ -27,14 +28,17 @@ export async function getAssessments(classSubjectId?: string): Promise<Assessmen
   return listOrNull<Assessment>(`/api/v1/assessments?${query}page_size=100`);
 }
 
-export async function getAssessmentResult(publicId: string): Promise<DetailResult<Assessment>> {
+// Wrapped in cache(): both detail pages that use this (/assessments/[id]
+// and /my-exams/[id]) call it from generateMetadata() and the page body
+// with the same publicId per request.
+export const getAssessmentResult = cache(async (publicId: string): Promise<DetailResult<Assessment>> => {
   const res = await djangoFetch(`/api/v1/assessments/${publicId}`);
   if (res.status === 403) return { status: "forbidden" };
   if (!res.ok) return { status: "not_found" };
   const body: Envelope<Assessment> = await res.json();
   if (!body.success || !body.data) return { status: "not_found" };
   return { status: "ok", data: body.data };
-}
+});
 
 export async function getQuestions(assessmentId: string): Promise<Question[] | null> {
   const questions = await listOrNull<Question>(

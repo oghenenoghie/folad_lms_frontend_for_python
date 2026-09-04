@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { djangoFetch } from "@/lib/session";
 import type { Envelope, Paginated } from "@/lib/api-types";
 
@@ -46,23 +47,27 @@ export async function getUsers(): Promise<AdminUser[] | null> {
   return listOrNull<AdminUser>("/api/v1/admin/users?page_size=100");
 }
 
-export async function getUser(publicId: string): Promise<AdminUser | null> {
+// Wrapped in cache(): the detail page's generateMetadata() and page body
+// both call this with the same publicId per request.
+export const getUser = cache(async (publicId: string): Promise<AdminUser | null> => {
   const res = await djangoFetch(`/api/v1/admin/users/${publicId}`);
   if (!res.ok) return null;
   const body: Envelope<AdminUser> = await res.json();
   return body.success ? body.data : null;
-}
+});
 
 export async function getRoles(): Promise<Role[] | null> {
   return listOrNull<Role>("/api/v1/admin/roles?page_size=100");
 }
 
-export async function getRole(publicId: string): Promise<Role | null> {
+// Wrapped in cache(): the detail page's generateMetadata() and page body
+// both call this with the same publicId per request.
+export const getRole = cache(async (publicId: string): Promise<Role | null> => {
   const res = await djangoFetch(`/api/v1/admin/roles/${publicId}`);
   if (!res.ok) return null;
   const body: Envelope<Role> = await res.json();
   return body.success ? body.data : null;
-}
+});
 
 export async function getPermissions(): Promise<Permission[] | null> {
   // Unpaginated on the backend (see apps.accounts.admin_views.PermissionListView) —

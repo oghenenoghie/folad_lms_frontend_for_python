@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { djangoFetch } from "@/lib/session";
 import type { DetailResult, Envelope, Paginated } from "@/lib/api-types";
 
@@ -132,14 +133,16 @@ export async function getReportCards(params?: {
   return listOrNull<ReportCard>(`/api/v1/report-cards?${query.toString()}`);
 }
 
-export async function getReportCardResult(publicId: string): Promise<DetailResult<ReportCard>> {
+// Wrapped in cache(): the detail page's generateMetadata() and page body
+// both call this with the same publicId per request.
+export const getReportCardResult = cache(async (publicId: string): Promise<DetailResult<ReportCard>> => {
   const res = await djangoFetch(`/api/v1/report-cards/${publicId}`);
   if (res.status === 403) return { status: "forbidden" };
   if (!res.ok) return { status: "not_found" };
   const body: Envelope<ReportCard> = await res.json();
   if (!body.success || !body.data) return { status: "not_found" };
   return { status: "ok", data: body.data };
-}
+});
 
 // "{academic year} — {term}" labels for every term in the org, keyed by
 // term public_id — shared by every screen that lists report cards next

@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { djangoFetch } from "@/lib/session";
 import type { DetailResult, Envelope, Paginated } from "@/lib/api-types";
 
@@ -37,14 +38,16 @@ export async function getStaffList(): Promise<Staff[] | null> {
   return listOrNull<Staff>("/api/v1/staff?page_size=100");
 }
 
-export async function getStaffMemberResult(publicId: string): Promise<DetailResult<Staff>> {
+// Wrapped in cache(): the detail page's generateMetadata() and page body
+// both call this with the same publicId per request.
+export const getStaffMemberResult = cache(async (publicId: string): Promise<DetailResult<Staff>> => {
   const res = await djangoFetch(`/api/v1/staff/${publicId}`);
   if (res.status === 403) return { status: "forbidden" };
   if (!res.ok) return { status: "not_found" };
   const body: Envelope<Staff> = await res.json();
   if (!body.success || !body.data) return { status: "not_found" };
   return { status: "ok", data: body.data };
-}
+});
 
 // Teacher is a strict one-to-one profile on Staff (§4 ARCHITECTURE.md) —
 // there's no detail-by-staff-id route, so this filters the list to at
