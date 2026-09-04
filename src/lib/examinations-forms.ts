@@ -170,3 +170,162 @@ export const gradeAnswerFields: FieldConfig<GradeAnswerFormValues>[] = [
 ];
 
 export const gradeAnswerDefaults: GradeAnswerFormValues = { marks_awarded: "", is_correct: false };
+
+// --- Grading schemes / grade bands ---
+
+export const gradingSchemeSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  is_default: z.boolean(),
+});
+export type GradingSchemeFormValues = z.infer<typeof gradingSchemeSchema>;
+
+export const gradingSchemeFields: FieldConfig<GradingSchemeFormValues>[] = [
+  { name: "name", label: "Name", type: "text" },
+  { name: "is_default", label: "Default scheme for this school", type: "checkbox" },
+];
+
+export const gradingSchemeDefaults: GradingSchemeFormValues = { name: "", is_default: false };
+
+export const gradeBandSchema = z.object({
+  grade: z.string().min(1, "Grade is required"),
+  min_score: decimalString,
+  max_score: decimalString,
+  remark: z.string().optional(),
+});
+export type GradeBandFormValues = z.infer<typeof gradeBandSchema>;
+
+export const gradeBandFields: FieldConfig<GradeBandFormValues>[] = [
+  { name: "grade", label: "Grade (e.g. A1, B2, C)", type: "text" },
+  { name: "min_score", label: "Minimum score", type: "text" },
+  { name: "max_score", label: "Maximum score", type: "text" },
+  { name: "remark", label: "Remark (e.g. Excellent)", type: "text" },
+];
+
+export const gradeBandDefaults: GradeBandFormValues = {
+  grade: "",
+  min_score: "",
+  max_score: "",
+  remark: "",
+};
+
+// --- Exams / exam schedules / invigilators ---
+
+export const examCreateSchema = z.object({
+  term: z.string().min(1, "Term is required"),
+  name: z.string().min(1, "Name is required"),
+  start_date: z.string().min(1, "Start date is required"),
+  end_date: z.string().min(1, "End date is required"),
+});
+export type ExamCreateFormValues = z.infer<typeof examCreateSchema>;
+
+export function examCreateFields(termOptions: SelectOption[]): FieldConfig<ExamCreateFormValues>[] {
+  return [
+    { name: "term", label: "Term", type: "select", options: termOptions, placeholder: "Select a term" },
+    { name: "name", label: "Name", type: "text" },
+    { name: "start_date", label: "Start date", type: "date" },
+    { name: "end_date", label: "End date", type: "date" },
+  ];
+}
+
+export const examCreateDefaults: ExamCreateFormValues = {
+  term: "",
+  name: "",
+  start_date: "",
+  end_date: "",
+};
+
+export const examEditSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  start_date: z.string().min(1, "Start date is required"),
+  end_date: z.string().min(1, "End date is required"),
+});
+export type ExamEditFormValues = z.infer<typeof examEditSchema>;
+
+export const examEditFields: FieldConfig<ExamEditFormValues>[] = [
+  { name: "name", label: "Name", type: "text" },
+  { name: "start_date", label: "Start date", type: "date" },
+  { name: "end_date", label: "End date", type: "date" },
+];
+
+const examScheduleTimeFields = {
+  date: z.string().min(1, "Date is required"),
+  start_time: z.string().min(1, "Start time is required"),
+  end_time: z.string().min(1, "End time is required"),
+  room: z.string().optional(),
+};
+
+export const examScheduleCreateSchema = z.object({
+  class_subject: z.string().min(1, "Class subject is required"),
+  ...examScheduleTimeFields,
+});
+export type ExamScheduleCreateFormValues = z.infer<typeof examScheduleCreateSchema>;
+
+export function examScheduleCreateFields(
+  classSubjectOptions: SelectOption[],
+  roomOptions: SelectOption[]
+): FieldConfig<ExamScheduleCreateFormValues>[] {
+  return [
+    {
+      name: "class_subject",
+      label: "Class subject",
+      type: "select",
+      options: classSubjectOptions,
+      placeholder: "Select a class subject",
+    },
+    { name: "date", label: "Date", type: "date" },
+    { name: "start_time", label: "Start time", type: "time" },
+    { name: "end_time", label: "End time", type: "time" },
+    { name: "room", label: "Room (optional)", type: "select", options: roomOptions, placeholder: "No room" },
+  ];
+}
+
+export const examScheduleCreateDefaults: ExamScheduleCreateFormValues = {
+  class_subject: "",
+  date: "",
+  start_time: "",
+  end_time: "",
+  room: "",
+};
+
+// class_subject/exam aren't editable server-side (perform_update drops
+// them) — reassigning a schedule to a different subject means deleting
+// and re-creating it, so the edit form only covers timing/room.
+export const examScheduleEditSchema = z.object(examScheduleTimeFields);
+export type ExamScheduleEditFormValues = z.infer<typeof examScheduleEditSchema>;
+
+export function examScheduleEditFields(
+  roomOptions: SelectOption[]
+): FieldConfig<ExamScheduleEditFormValues>[] {
+  return [
+    { name: "date", label: "Date", type: "date" },
+    { name: "start_time", label: "Start time", type: "time" },
+    { name: "end_time", label: "End time", type: "time" },
+    { name: "room", label: "Room (optional)", type: "select", options: roomOptions, placeholder: "No room" },
+  ];
+}
+
+export const examScheduleEditDefaults: ExamScheduleEditFormValues = {
+  date: "",
+  start_time: "",
+  end_time: "",
+  room: "",
+};
+
+export const invigilatorSchema = z.object({
+  teacher: z.string().min(1, "Teacher is required"),
+});
+export type InvigilatorFormValues = z.infer<typeof invigilatorSchema>;
+
+export function invigilatorFields(teacherOptions: SelectOption[]): FieldConfig<InvigilatorFormValues>[] {
+  return [
+    {
+      name: "teacher",
+      label: "Teacher",
+      type: "select",
+      options: teacherOptions,
+      placeholder: "Select a teacher",
+    },
+  ];
+}
+
+export const invigilatorDefaults: InvigilatorFormValues = { teacher: "" };
