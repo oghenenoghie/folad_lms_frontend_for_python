@@ -143,6 +143,7 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     heading: "Library",
     items: [
+      { label: "Library Desk", icon: BookOpen, href: "/library-desk", enabled: true, audience: MANAGEMENT },
       { label: "My Library", icon: BookOpen, href: "/my-library", enabled: true, audience: ["student"] },
     ],
   },
