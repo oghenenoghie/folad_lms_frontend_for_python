@@ -57,8 +57,8 @@ export default async function StaffPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>School</TableHead>
-              <TableHead>Position</TableHead>
+              <TableHead className="hidden sm:table-cell">School</TableHead>
+              <TableHead className="hidden sm:table-cell">Position</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="w-1" />
             </TableRow>
@@ -70,10 +70,15 @@ export default async function StaffPage() {
                   <Link href={`/staff/${member.public_id}`} className="font-medium text-primary hover:underline">
                     {member.first_name} {member.last_name}
                   </Link>
-                  <p className="text-xs text-muted-foreground">{member.employee_number}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {member.employee_number}
+                    {/* Position hides as its own column below sm — kept
+                        here so it's not lost on a narrow screen. */}
+                    <span className="sm:hidden"> · {member.position}</span>
+                  </p>
                 </TableCell>
-                <TableCell>{schoolNameById.get(member.school) ?? "—"}</TableCell>
-                <TableCell>{member.position}</TableCell>
+                <TableCell className="hidden sm:table-cell">{schoolNameById.get(member.school) ?? "—"}</TableCell>
+                <TableCell className="hidden sm:table-cell">{member.position}</TableCell>
                 <TableCell>
                   <Badge variant={member.employment_status === "active" ? "default" : "secondary"}>
                     {employmentStatusLabel(member.employment_status)}
