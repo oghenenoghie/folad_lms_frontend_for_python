@@ -86,14 +86,29 @@ export async function getLibraryLoansForMember(memberId: string): Promise<Librar
   return listOrNull<LibraryLoan>(`/api/v1/library-loans?member_id=${memberId}&page_size=200`);
 }
 
-export async function getLibraryCopies(): Promise<LibraryCopy[] | null> {
-  return listOrNull<LibraryCopy>(`/api/v1/library-copies?page_size=200`);
+// `book_id` is an optional filter server-side — used by the book detail
+// section's nested copies list; the circulation desk instead fetches every
+// copy unfiltered to build its "available copies" checkout picker.
+export async function getLibraryCopies(bookId?: string): Promise<LibraryCopy[] | null> {
+  const query = bookId ? `book_id=${bookId}&` : "";
+  return listOrNull<LibraryCopy>(`/api/v1/library-copies?${query}page_size=200`);
 }
 
-export async function getLibraryBooks(): Promise<LibraryBook[] | null> {
-  return listOrNull<LibraryBook>(`/api/v1/library-books?page_size=200`);
+export async function getLibraryBooks(schoolId?: string): Promise<LibraryBook[] | null> {
+  const query = schoolId ? `school_id=${schoolId}&` : "";
+  return listOrNull<LibraryBook>(`/api/v1/library-books?${query}page_size=200`);
 }
 
 export async function getLibraryFinesForLoan(loanId: string): Promise<LibraryFine[] | null> {
   return listOrNull<LibraryFine>(`/api/v1/library-fines?loan_id=${loanId}&page_size=100`);
+}
+
+// --- Circulation desk (all loans, not scoped to one member) ---
+
+export async function getLibraryLoans(): Promise<LibraryLoan[] | null> {
+  return listOrNull<LibraryLoan>(`/api/v1/library-loans?page_size=200`);
+}
+
+export async function getLibraryMembersBySchool(schoolId: string): Promise<LibraryMember[] | null> {
+  return listOrNull<LibraryMember>(`/api/v1/library-members?school_id=${schoolId}&page_size=200`);
 }
