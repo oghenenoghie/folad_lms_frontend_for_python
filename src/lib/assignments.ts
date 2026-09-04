@@ -49,6 +49,14 @@ export async function getSubmissionForAssignment(
   return submissions && submissions.length > 0 ? submissions[0] : null;
 }
 
+// --- Teacher-facing (all submissions on one assignment, for grading) ---
+
+export async function getSubmissionsForAssignment(assignmentId: string): Promise<AssignmentSubmission[] | null> {
+  return listOrNull<AssignmentSubmission>(
+    `/api/v1/assignment-submissions?assignment_id=${assignmentId}&page_size=200`
+  );
+}
+
 export async function getSubmissionDownloadUrl(publicId: string): Promise<string | null> {
   const res = await djangoFetch(`/api/v1/assignment-submissions/${publicId}/download`);
   if (!res.ok) return null;
