@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DeleteConfirmButton } from "@/components/schools/delete-confirm-button";
 import { QuestionFormDialog } from "@/components/examinations/question-form-dialog";
 import { QuestionOptionFormDialog } from "@/components/examinations/question-option-form-dialog";
+import { QuestionImageControl } from "@/components/examinations/question-image-control";
 import {
   getQuestionOptions,
   OBJECTIVE_QUESTION_TYPES,
@@ -62,6 +63,22 @@ export async function QuestionCard({
           />
         </div>
       </CardHeader>
+
+      <CardContent className="space-y-3 pt-0">
+        {question.image_url && (
+          // eslint-disable-next-line @next/next/no-img-element -- a presigned storage URL, not an app asset next/image can optimize
+          <img
+            src={question.image_url}
+            alt={`Diagram for question ${question.sequence}`}
+            className="max-h-64 rounded-md border object-contain"
+          />
+        )}
+        <QuestionImageControl
+          assessmentId={assessmentId}
+          questionId={question.public_id}
+          hasImage={Boolean(question.image_url)}
+        />
+      </CardContent>
 
       {isObjective && (
         <CardContent className="space-y-3">
