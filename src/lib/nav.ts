@@ -11,6 +11,7 @@ import {
   GraduationCap,
   HeartHandshake,
   LayoutDashboard,
+  MessageSquare,
   NotebookPen,
   Shield,
 } from "lucide-react";
@@ -50,6 +51,7 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     items: [
       { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard", enabled: true, audience: ALL_AUDIENCES },
+      { label: "Messages", icon: MessageSquare, href: "/messages", enabled: true, audience: ALL_AUDIENCES },
     ],
   },
   {

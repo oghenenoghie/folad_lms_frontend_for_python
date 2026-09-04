@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { Pencil } from "lucide-react";
+import { MessageSquare, Pencil } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StudentEditFormDialog } from "@/components/students/student-form-dialog";
 import { DeleteConfirmButton } from "@/components/schools/delete-confirm-button";
+import { ComposeMessageDialog } from "@/components/messages/compose-message-dialog";
 import { getStudentResult } from "@/lib/students";
 import { getSchool } from "@/lib/schools";
 import { updateStudent, deleteStudent } from "@/lib/actions/students";
@@ -61,6 +62,18 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {student.user && (
+            <ComposeMessageDialog
+              trigger={
+                <Button variant="secondary">
+                  <MessageSquare className="h-4 w-4" />
+                  Message
+                </Button>
+              }
+              recipientPublicId={student.user}
+              recipientName={`${student.first_name} ${student.last_name}`}
+            />
+          )}
           <StudentEditFormDialog
             trigger={
               <Button variant="secondary">

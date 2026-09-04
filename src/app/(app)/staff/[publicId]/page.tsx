@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { Pencil } from "lucide-react";
+import { MessageSquare, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StaffEditFormDialog } from "@/components/staff/staff-form-dialog";
 import { DeleteConfirmButton } from "@/components/schools/delete-confirm-button";
 import { TeacherSection } from "@/components/staff/teacher-section";
+import { ComposeMessageDialog } from "@/components/messages/compose-message-dialog";
 import { getStaffMemberResult } from "@/lib/staff";
 import { getSchool, getDepartments } from "@/lib/schools";
 import { updateStaff, deleteStaff } from "@/lib/actions/staff";
@@ -49,6 +50,18 @@ export default async function StaffDetailPage({ params }: { params: Promise<{ pu
           </p>
         </div>
         <div className="flex items-center gap-2">
+          {staff.user && (
+            <ComposeMessageDialog
+              trigger={
+                <Button variant="secondary">
+                  <MessageSquare className="h-4 w-4" />
+                  Message
+                </Button>
+              }
+              recipientPublicId={staff.user}
+              recipientName={`${staff.first_name} ${staff.last_name}`}
+            />
+          )}
           <StaffEditFormDialog
             trigger={
               <Button variant="secondary">
