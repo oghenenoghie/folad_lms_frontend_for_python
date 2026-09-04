@@ -4,6 +4,7 @@ import {
   Briefcase,
   Building2,
   BookOpen,
+  Bus,
   CalendarCheck,
   CalendarDays,
   ClipboardCheck,
@@ -159,6 +160,12 @@ export const NAV_SECTIONS: NavSection[] = [
     heading: "Hostel",
     items: [
       { label: "Hostel Desk", icon: BedDouble, href: "/hostel-desk", enabled: true, audience: MANAGEMENT },
+    ],
+  },
+  {
+    heading: "Transport",
+    items: [
+      { label: "Transport Desk", icon: Bus, href: "/transport-desk", enabled: true, audience: MANAGEMENT },
     ],
   },
   {
