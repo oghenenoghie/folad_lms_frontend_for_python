@@ -19,6 +19,7 @@ import { DiscountsSection } from "@/components/finance/discounts-section";
 import { AnnouncementsSection } from "@/components/communication/announcements-section";
 import { RoomsSection } from "@/components/timetable/rooms-section";
 import { PeriodsSection } from "@/components/timetable/periods-section";
+import { HostelsSection } from "@/components/hostel/hostels-section";
 import { getSchoolResult } from "@/lib/schools";
 import { updateSchool, deleteSchool } from "@/lib/actions/schools";
 
@@ -110,6 +111,7 @@ export default async function SchoolDetailPage({ params }: { params: Promise<{ p
       <AnnouncementsSection schoolId={school.public_id} />
       <RoomsSection schoolId={school.public_id} />
       <PeriodsSection schoolId={school.public_id} />
+      <HostelsSection schoolId={school.public_id} />
     </div>
   );
 }
