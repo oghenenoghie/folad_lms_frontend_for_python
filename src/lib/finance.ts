@@ -2,6 +2,26 @@ import "server-only";
 import { djangoFetch } from "@/lib/session";
 import type { DetailResult, Envelope, Paginated } from "@/lib/api-types";
 
+export type DiscountType = "percentage" | "fixed_amount";
+
+export type Discount = {
+  public_id: string;
+  school: string;
+  name: string;
+  discount_type: DiscountType;
+  percentage: string | null;
+  fixed_amount_minor: number | null;
+  is_active: boolean;
+};
+
+export type Scholarship = {
+  public_id: string;
+  student: string;
+  discount: string;
+  academic_year: string;
+  is_active: boolean;
+};
+
 export type InvoiceStatus = "draft" | "issued" | "partially_paid" | "paid" | "cancelled";
 
 export type Invoice = {
@@ -115,4 +135,14 @@ export async function getPaymentsForInvoice(invoiceId: string): Promise<Payment[
 export async function getReceiptForPayment(paymentId: string): Promise<Receipt | null> {
   const receipts = await listOrNull<Receipt>(`/api/v1/receipts?payment_id=${paymentId}`);
   return receipts && receipts.length > 0 ? receipts[0] : null;
+}
+
+// --- Discounts / scholarships ---
+
+export async function getDiscounts(schoolId: string): Promise<Discount[] | null> {
+  return listOrNull<Discount>(`/api/v1/discounts?school_id=${schoolId}&page_size=100`);
+}
+
+export async function getScholarshipsForStudent(studentId: string): Promise<Scholarship[] | null> {
+  return listOrNull<Scholarship>(`/api/v1/scholarships?student_id=${studentId}&page_size=100`);
 }
