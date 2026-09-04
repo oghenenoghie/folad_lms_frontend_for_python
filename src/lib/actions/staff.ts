@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { authorizedDjangoFetch } from "@/lib/session";
 import { toActionResult, type ActionResult } from "@/lib/action-result";
 import { NO_DEPARTMENT } from "@/lib/staff-forms";
+import type { BulkImportResult } from "@/lib/bulk-import";
 
 async function call<T>(path: string, method: string, body?: unknown): Promise<ActionResult<T>> {
   const res = await authorizedDjangoFetch(path, {
@@ -40,6 +41,16 @@ export async function updateStaff(publicId: string, input: Record<string, unknow
 
 export async function deleteStaff(publicId: string) {
   const result = await call(`/api/v1/staff/${publicId}`, "DELETE");
+  if (result.success) revalidatePath("/staff");
+  return result;
+}
+
+export async function bulkImportStaff(formData: FormData): Promise<ActionResult<BulkImportResult>> {
+  const res = await authorizedDjangoFetch("/api/v1/staff/bulk-import", {
+    method: "POST",
+    body: formData,
+  });
+  const result = await toActionResult<BulkImportResult>(res);
   if (result.success) revalidatePath("/staff");
   return result;
 }

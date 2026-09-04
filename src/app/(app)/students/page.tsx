@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { GraduationCap, Plus } from "lucide-react";
+import { GraduationCap, Plus, Upload } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StudentCreateFormDialog } from "@/components/students/student-form-dialog";
+import { BulkImportDialog } from "@/components/schools/bulk-import-dialog";
 import { getStudents } from "@/lib/students";
 import { getSchools } from "@/lib/schools";
-import { createStudent } from "@/lib/actions/students";
+import { createStudent, bulkImportStudents } from "@/lib/actions/students";
 import { studentCreateDefaults, enrollmentStatusLabel } from "@/lib/student-forms";
 
 export const metadata: Metadata = { title: "Students" };
@@ -34,18 +35,31 @@ export default async function StudentsPage() {
           <p className="text-sm text-muted-foreground">Learners enrolled across your organization&apos;s schools</p>
         </div>
         {students !== null && schoolOptions.length > 0 && (
-          <StudentCreateFormDialog
-            trigger={
-              <Button>
-                <Plus className="h-4 w-4" />
-                New student
-              </Button>
-            }
-            title="New student"
-            defaultValues={studentCreateDefaults}
-            schoolOptions={schoolOptions}
-            action={createStudent}
-          />
+          <div className="flex items-center gap-2">
+            <BulkImportDialog
+              trigger={
+                <Button variant="secondary">
+                  <Upload className="h-4 w-4" />
+                  Bulk import
+                </Button>
+              }
+              title="Bulk import students"
+              requiredColumns={["school_code", "first_name", "last_name", "date_of_birth"]}
+              action={bulkImportStudents}
+            />
+            <StudentCreateFormDialog
+              trigger={
+                <Button>
+                  <Plus className="h-4 w-4" />
+                  New student
+                </Button>
+              }
+              title="New student"
+              defaultValues={studentCreateDefaults}
+              schoolOptions={schoolOptions}
+              action={createStudent}
+            />
+          </div>
         )}
       </div>
 
