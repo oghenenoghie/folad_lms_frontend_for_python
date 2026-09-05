@@ -10,6 +10,7 @@ import {
   ClipboardCheck,
   ClipboardList,
   CreditCard,
+  FileBarChart,
   FileText,
   GraduationCap,
   HeartHandshake,
@@ -167,6 +168,10 @@ export const NAV_SECTIONS: NavSection[] = [
     items: [
       { label: "Transport Desk", icon: Bus, href: "/transport-desk", enabled: true, audience: MANAGEMENT },
     ],
+  },
+  {
+    heading: "Reports",
+    items: [{ label: "Reports", icon: FileBarChart, href: "/reports", enabled: true, audience: MANAGEMENT }],
   },
   {
     heading: "Administration",
