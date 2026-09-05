@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { StaffEditFormDialog } from "@/components/staff/staff-form-dialog";
 import { DeleteConfirmButton } from "@/components/schools/delete-confirm-button";
 import { TeacherSection } from "@/components/staff/teacher-section";
+import { DocumentsSection } from "@/components/documents/documents-section";
 import { getStaffMemberResult } from "@/lib/staff";
 import { getSchool, getDepartments } from "@/lib/schools";
 import { updateStaff, deleteStaff } from "@/lib/actions/staff";
@@ -98,6 +99,7 @@ export default async function StaffDetailPage({ params }: { params: Promise<{ pu
       </div>
 
       <TeacherSection staffId={staff.public_id} />
+      <DocumentsSection ownerType="staff" ownerId={staff.public_id} schoolId={staff.school} />
     </div>
   );
 }
