@@ -48,9 +48,9 @@ export default async function GuardiansPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>Phone</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Occupation</TableHead>
+              <TableHead className="hidden sm:table-cell">Phone</TableHead>
+              <TableHead className="hidden sm:table-cell">Email</TableHead>
+              <TableHead className="hidden sm:table-cell">Occupation</TableHead>
               <TableHead className="w-1" />
             </TableRow>
           </TableHeader>
@@ -61,10 +61,13 @@ export default async function GuardiansPage() {
                   <Link href={`/guardians/${guardian.public_id}`} className="font-medium text-primary hover:underline">
                     {guardian.first_name} {guardian.last_name}
                   </Link>
+                  {/* Phone hides as its own column below sm — shown here
+                      instead so it's not lost on a narrow screen. */}
+                  <p className="text-xs text-muted-foreground sm:hidden">{guardian.phone || "—"}</p>
                 </TableCell>
-                <TableCell>{guardian.phone || "—"}</TableCell>
-                <TableCell>{guardian.email || "—"}</TableCell>
-                <TableCell>{guardian.occupation || "—"}</TableCell>
+                <TableCell className="hidden sm:table-cell">{guardian.phone || "—"}</TableCell>
+                <TableCell className="hidden sm:table-cell">{guardian.email || "—"}</TableCell>
+                <TableCell className="hidden sm:table-cell">{guardian.occupation || "—"}</TableCell>
                 <TableCell className="text-right">
                   <Button asChild variant="ghost" size="icon-sm">
                     <Link href={`/guardians/${guardian.public_id}`}>View</Link>
