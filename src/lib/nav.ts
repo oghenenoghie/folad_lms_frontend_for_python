@@ -14,6 +14,7 @@ import {
   FileText,
   GraduationCap,
   HeartHandshake,
+  HelpCircle,
   LayoutDashboard,
   Monitor,
   NotebookPen,
@@ -82,6 +83,13 @@ export const NAV_SECTIONS: NavSection[] = [
     heading: "Examinations",
     items: [
       { label: "Assessments", icon: ClipboardList, href: "/assessments", enabled: true, audience: TEACHING },
+      {
+        label: "CBT Question Bank",
+        icon: HelpCircle,
+        href: "/cbt-questions",
+        enabled: true,
+        audience: TEACHING,
+      },
       { label: "Exams", icon: NotebookPen, href: "/exams", enabled: true, audience: MANAGEMENT },
       { label: "My Exams", icon: NotebookPen, href: "/my-exams", enabled: true, audience: ["student"] },
       {
