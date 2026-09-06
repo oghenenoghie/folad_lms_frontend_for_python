@@ -57,8 +57,8 @@ export default async function UsersPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Roles</TableHead>
+              <TableHead className="hidden sm:table-cell">Email</TableHead>
+              <TableHead className="hidden sm:table-cell">Roles</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="w-1" />
             </TableRow>
@@ -66,13 +66,18 @@ export default async function UsersPage() {
           <TableBody>
             {users.map((user) => (
               <TableRow key={user.public_id}>
-                <TableCell>
+                <TableCell className="max-w-40 sm:max-w-none">
                   <Link href={`/users/${user.public_id}`} className="font-medium text-primary hover:underline">
                     {user.first_name} {user.last_name}
                   </Link>
+                  {/* Email hides as its own column below sm — kept here
+                      so it's not lost on a narrow screen. truncate so a
+                      long address doesn't force the row wider than the
+                      viewport and push Status/View off-screen. */}
+                  <p className="truncate text-xs text-muted-foreground sm:hidden">{user.email}</p>
                 </TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>
+                <TableCell className="hidden sm:table-cell">{user.email}</TableCell>
+                <TableCell className="hidden sm:table-cell">
                   <div className="flex flex-wrap gap-1">
                     {user.roles.length === 0 ? (
                       <span className="text-muted-foreground">—</span>
