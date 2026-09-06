@@ -203,8 +203,8 @@ export function cbtExamCreateFields(
     { name: "exam_type", label: "Type", type: "select", options: cbtExamTypeOptions },
     { name: "duration_minutes", label: "Duration (minutes)", type: "number" },
     { name: "pass_mark", label: "Pass mark", type: "text" },
-    { name: "start_at", label: "Opens at", type: "text" },
-    { name: "end_at", label: "Closes at", type: "text" },
+    { name: "start_at", label: "Opens at", type: "datetime-local" },
+    { name: "end_at", label: "Closes at", type: "datetime-local" },
   ];
 }
 
@@ -241,8 +241,8 @@ export const cbtExamEditFields: FieldConfig<CBTExamEditFormValues>[] = [
   { name: "exam_type", label: "Type", type: "select", options: cbtExamTypeOptions },
   { name: "duration_minutes", label: "Duration (minutes)", type: "number" },
   { name: "pass_mark", label: "Pass mark", type: "text" },
-  { name: "start_at", label: "Opens at", type: "text" },
-  { name: "end_at", label: "Closes at", type: "text" },
+  { name: "start_at", label: "Opens at", type: "datetime-local" },
+  { name: "end_at", label: "Closes at", type: "datetime-local" },
   { name: "randomize_questions", label: "Randomize question order", type: "checkbox" },
   { name: "randomize_options", label: "Randomize option order", type: "checkbox" },
   { name: "allow_resume", label: "Allow resuming an in-progress attempt", type: "checkbox" },
