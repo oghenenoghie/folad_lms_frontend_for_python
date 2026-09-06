@@ -27,7 +27,11 @@ import type { ActionResult } from "@/lib/action-result";
 export type SelectOption = { value: string; label: string };
 
 export type FieldConfig<T extends FieldValues> =
-  | { name: Path<T>; label: string; type: "text" | "email" | "password" | "date" | "time" | "number" }
+  | {
+      name: Path<T>;
+      label: string;
+      type: "text" | "email" | "password" | "date" | "time" | "datetime-local" | "number";
+    }
   | { name: Path<T>; label: string; type: "textarea" }
   | { name: Path<T>; label: string; type: "checkbox" }
   | { name: Path<T>; label: string; type: "select"; options: SelectOption[]; placeholder?: string };

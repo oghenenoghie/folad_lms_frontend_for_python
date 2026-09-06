@@ -91,6 +91,7 @@ export const NAV_SECTIONS: NavSection[] = [
         audience: TEACHING,
       },
       { label: "Exams", icon: NotebookPen, href: "/exams", enabled: true, audience: MANAGEMENT },
+      { label: "CBT Exams", icon: Monitor, href: "/cbt-exams", enabled: true, audience: TEACHING },
       { label: "My Exams", icon: NotebookPen, href: "/my-exams", enabled: true, audience: ["student"] },
       {
         label: "My CBT Exams",
