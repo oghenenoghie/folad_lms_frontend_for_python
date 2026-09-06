@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { authorizedDjangoFetch } from "@/lib/session";
 import { toActionResult, type ActionResult } from "@/lib/action-result";
+import type { Envelope } from "@/lib/api-types";
 import type {
   CBTAttemptPayload,
   CBTBulkImportResult,
@@ -10,6 +11,7 @@ import type {
   CBTExamCandidate,
   CBTExamQuestion,
   CBTExamSection,
+  CBTLiveStatus,
   CBTQuestionAdmin,
   CBTResponse,
   CBTStudentAnswer,
@@ -421,4 +423,24 @@ export async function addExamCandidatesFromClassArm(
   );
   if (result.success) revalidatePath(`/cbt-exams/${examPublicId}`);
   return result;
+}
+
+// --- Staff-facing: live invigilation ---
+
+// A Server Action rather than the read-only lib/cbt.ts (djangoFetch) path
+// — the invigilation dashboard client component polls this every few
+// seconds for potentially a whole exam window, well past a 15-minute
+// access token's lifetime, so it needs authorizedDjangoFetch's ability to
+// refresh the token transparently mid-session. Read-only: no
+// revalidatePath, nothing is ever written here.
+export async function fetchExamLiveStatus(examPublicId: string): Promise<CBTLiveStatus | null> {
+  const res = await authorizedDjangoFetch(`/api/v1/cbt/exams/${examPublicId}/live`);
+  if (!res.ok) return null;
+  const body: Envelope<CBTLiveStatus> = await res.json().catch(() => ({
+    success: false,
+    data: null,
+    message: null,
+    errors: null,
+  }));
+  return body.success && body.data ? body.data : null;
 }

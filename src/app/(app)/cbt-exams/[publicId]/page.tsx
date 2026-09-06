@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Pencil, Plus } from "lucide-react";
+import { Monitor, Pencil, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -136,6 +136,14 @@ export default async function CBTExamDetailPage({
           </p>
         </div>
         <div className="flex items-center gap-2">
+          {exam.status !== "draft" && (
+            <Button variant="outline" asChild>
+              <Link href={`/cbt-exams/${exam.public_id}/live`}>
+                <Monitor className="h-4 w-4" />
+                Live status
+              </Link>
+            </Button>
+          )}
           <ExamStatusActions
             status={exam.status}
             candidateCount={(candidates ?? []).length}
