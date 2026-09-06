@@ -15,6 +15,7 @@ import {
   GraduationCap,
   HeartHandshake,
   LayoutDashboard,
+  Monitor,
   NotebookPen,
   Shield,
 } from "lucide-react";
@@ -83,6 +84,13 @@ export const NAV_SECTIONS: NavSection[] = [
       { label: "Assessments", icon: ClipboardList, href: "/assessments", enabled: true, audience: TEACHING },
       { label: "Exams", icon: NotebookPen, href: "/exams", enabled: true, audience: MANAGEMENT },
       { label: "My Exams", icon: NotebookPen, href: "/my-exams", enabled: true, audience: ["student"] },
+      {
+        label: "My CBT Exams",
+        icon: Monitor,
+        href: "/my-cbt-exams",
+        enabled: true,
+        audience: ["student"],
+      },
     ],
   },
   {
