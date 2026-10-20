@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Briefcase, Plus } from "lucide-react";
+import { Briefcase, Plus, Upload } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StaffCreateFormDialog } from "@/components/staff/staff-form-dialog";
+import { BulkImportDialog } from "@/components/schools/bulk-import-dialog";
 import { getStaffList } from "@/lib/staff";
 import { getSchools } from "@/lib/schools";
-import { createStaff } from "@/lib/actions/staff";
+import { createStaff, bulkImportStaff } from "@/lib/actions/staff";
 import { staffCreateDefaults, employmentStatusLabel } from "@/lib/staff-forms";
 
 export const metadata: Metadata = { title: "Staff" };
@@ -25,18 +26,31 @@ export default async function StaffPage() {
           <p className="text-sm text-muted-foreground">Employees across your organization&apos;s schools</p>
         </div>
         {staff !== null && schoolOptions.length > 0 && (
-          <StaffCreateFormDialog
-            trigger={
-              <Button>
-                <Plus className="h-4 w-4" />
-                New staff
-              </Button>
-            }
-            title="New staff"
-            defaultValues={staffCreateDefaults}
-            schoolOptions={schoolOptions}
-            action={createStaff}
-          />
+          <div className="flex items-center gap-2">
+            <BulkImportDialog
+              trigger={
+                <Button variant="secondary">
+                  <Upload className="h-4 w-4" />
+                  Bulk import
+                </Button>
+              }
+              title="Bulk import staff"
+              requiredColumns={["school_code", "first_name", "last_name", "position", "date_joined"]}
+              action={bulkImportStaff}
+            />
+            <StaffCreateFormDialog
+              trigger={
+                <Button>
+                  <Plus className="h-4 w-4" />
+                  New staff
+                </Button>
+              }
+              title="New staff"
+              defaultValues={staffCreateDefaults}
+              schoolOptions={schoolOptions}
+              action={createStaff}
+            />
+          </div>
         )}
       </div>
 
