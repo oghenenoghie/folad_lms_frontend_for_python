@@ -9,11 +9,13 @@ import { ACCESS_COOKIE, REFRESH_COOKIE, setSessionCookies } from "@/lib/auth-coo
 // a protected page for a client with no session at all, and transparently
 // refreshes an access token that expired between page loads so a session
 // doesn't die just because the tab sat idle past the 15-minute access TTL.
-const PUBLIC_PATHS = ["/login", "/report/verify"];
+const PUBLIC_PATHS = ["/", "/login", "/report/verify"];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  if (PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
+  // "/" is an exact match only — every other pathname also starts with "/"
+  // and must still fall through to the auth check below.
+  if (PUBLIC_PATHS.some((p) => (p === "/" ? pathname === "/" : pathname === p || pathname.startsWith(`${p}/`)))) {
     return NextResponse.next();
   }
 
