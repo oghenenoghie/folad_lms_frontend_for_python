@@ -96,7 +96,7 @@ export default async function AssessmentsPage() {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Type</TableHead>
-              <TableHead>Weight</TableHead>
+              <TableHead className="hidden sm:table-cell">Weight</TableHead>
               <TableHead>Max score</TableHead>
             </TableRow>
           </TableHeader>
@@ -110,11 +110,14 @@ export default async function AssessmentsPage() {
                   >
                     {assessment.name}
                   </Link>
+                  {/* Weight hides as its own column below sm — kept here
+                      so it's not lost on a narrow screen. */}
+                  <p className="text-xs text-muted-foreground sm:hidden">Weight {assessment.weight}</p>
                 </TableCell>
                 <TableCell>
                   <Badge variant="secondary">{assessmentTypeLabel(assessment.assessment_type)}</Badge>
                 </TableCell>
-                <TableCell>{assessment.weight}</TableCell>
+                <TableCell className="hidden sm:table-cell">{assessment.weight}</TableCell>
                 <TableCell>{assessment.max_score}</TableCell>
               </TableRow>
             ))}

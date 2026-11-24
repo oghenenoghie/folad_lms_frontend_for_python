@@ -66,8 +66,8 @@ export default async function StudentsPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>School</TableHead>
-              <TableHead>Admission #</TableHead>
+              <TableHead className="hidden sm:table-cell">School</TableHead>
+              <TableHead className="hidden sm:table-cell">Admission #</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="w-1" />
             </TableRow>
@@ -86,9 +86,14 @@ export default async function StudentsPage() {
                     </Avatar>
                     {student.first_name} {student.last_name}
                   </Link>
+                  {/* School/admission # hide as columns below sm — kept
+                      here so they're not lost on a narrow screen. */}
+                  <p className="pl-8 text-xs text-muted-foreground sm:hidden">
+                    {schoolNameById.get(student.school) ?? "—"} · {student.admission_number}
+                  </p>
                 </TableCell>
-                <TableCell>{schoolNameById.get(student.school) ?? "—"}</TableCell>
-                <TableCell>{student.admission_number}</TableCell>
+                <TableCell className="hidden sm:table-cell">{schoolNameById.get(student.school) ?? "—"}</TableCell>
+                <TableCell className="hidden sm:table-cell">{student.admission_number}</TableCell>
                 <TableCell>
                   <Badge variant={STATUS_VARIANT[student.enrollment_status] ?? "secondary"}>
                     {enrollmentStatusLabel(student.enrollment_status)}

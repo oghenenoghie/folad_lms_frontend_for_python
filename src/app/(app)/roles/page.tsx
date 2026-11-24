@@ -57,9 +57,9 @@ export default async function RolesPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Label</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Permissions</TableHead>
-              <TableHead>Type</TableHead>
+              <TableHead className="hidden sm:table-cell">Name</TableHead>
+              <TableHead className="hidden sm:table-cell">Permissions</TableHead>
+              <TableHead className="hidden sm:table-cell">Type</TableHead>
               <TableHead className="w-1" />
             </TableRow>
           </TableHeader>
@@ -67,13 +67,25 @@ export default async function RolesPage() {
             {roles.map((role) => (
               <TableRow key={role.public_id}>
                 <TableCell>
-                  <Link href={`/roles/${role.public_id}`} className="font-medium text-primary hover:underline">
-                    {role.label}
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    <Link href={`/roles/${role.public_id}`} className="font-medium text-primary hover:underline">
+                      {role.label}
+                    </Link>
+                    {/* Type hides as its own column below sm — shown
+                        inline here instead so it's not lost. */}
+                    <span className="sm:hidden">
+                      {role.is_system ? <Badge variant="outline">System</Badge> : <Badge variant="secondary">Custom</Badge>}
+                    </span>
+                  </div>
+                  {/* Name/permission count hide as their own columns below
+                      sm — kept here so they're not lost on a narrow screen. */}
+                  <p className="font-mono text-xs text-muted-foreground sm:hidden">
+                    {role.name} · {role.permissions.length} permission{role.permissions.length === 1 ? "" : "s"}
+                  </p>
                 </TableCell>
-                <TableCell className="font-mono text-xs">{role.name}</TableCell>
-                <TableCell>{role.permissions.length}</TableCell>
-                <TableCell>
+                <TableCell className="hidden font-mono text-xs sm:table-cell">{role.name}</TableCell>
+                <TableCell className="hidden sm:table-cell">{role.permissions.length}</TableCell>
+                <TableCell className="hidden sm:table-cell">
                   {role.is_system ? <Badge variant="outline">System</Badge> : <Badge variant="secondary">Custom</Badge>}
                 </TableCell>
                 <TableCell className="text-right">
